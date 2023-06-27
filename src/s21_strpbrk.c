@@ -1,0 +1,14 @@
+#include "../s21_string.h" //скорректирую эту строчку, когда появится общий хэдер
+
+//находим первое вхождение любого символа из str2 в строке str1
+
+char *s21_strpbrk(const char *str1, const char *str2) {
+  char *search = S21_NULL;
+  for (; *str1 != '\0'; ++str1) {
+    if (s21_strchr(str2, *str1)) {
+      search = (char *)str1;
+      break;
+    }
+  }
+  return search;
+}
