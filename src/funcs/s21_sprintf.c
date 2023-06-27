@@ -174,8 +174,16 @@ int perform_conversion(char *str, char specifier, flags_t flags,
   return written;
 }
 
-// TODO:
-int pad(char *str, int num, bool zero_padding) { return num; }
+bool is_zero_padding_applicable(flags_t flags, char specifier) {
+  return flags.zero_padding &&
+         ((strchr("feEgG", specifier) != NULL) ||
+          ((strchr("duxXo", specifier) != NULL) && flags.precision < 0));
+}
+
+int pad(char *str, int num, bool zero_padding) {
+  for (int i = 0; i < num; ++i) str[i] = zero_padding ? '0' : ' ';
+  return num;
+}
 
 int s21_sprintf(char *str, const char *format, ...) {
   va_list args;
@@ -191,8 +199,7 @@ int s21_sprintf(char *str, const char *format, ...) {
       f = parse_size(f, &flags);
       if (!flags.left_just) {
         int padding = flags.width - perform_conversion(NULL, *f, flags, &args);
-        // TODO: ingore zero_padding if not a number, or it's an integer and
-        // precision is specified
+        flags.zero_padding = is_zero_padding_applicable(flags, *f);
         written += pad(&(str[written]), padding, flags.zero_padding);
         written += perform_conversion(&(str[written]), *f, flags, &args);
       } else {
