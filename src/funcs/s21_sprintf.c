@@ -126,11 +126,12 @@ int convert_d(char *str, flags_t flags, va_list *args) {
     } else {
       int len, tmp = num;
       for (len = 0; tmp; ++len) tmp /= 10;
+      len = precision > len ? precision : len;
       do {
         str[written + --len] = '0' + num % 10;
         ++written;
         num /= 10;
-      } while (num);
+      } while (len);
     }
   }
   return written;
@@ -147,7 +148,25 @@ int convert_s(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
-int convert_u(char *str, flags_t flags, va_list *args) { return 0; }
+int convert_u(char *str, flags_t flags, va_list *args) {
+  unsigned long num = va_arg(*args, unsigned long);
+  int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
+  if (precision != 0 || num != 0 || flags.alt) {
+    if (num == 0) {
+      str[written] = '0';
+      ++written;
+    } else {
+      int len, tmp = num;
+      len = precision > len ? precision : len;
+      do {
+        str[written + --len] = '0' + num % 10;
+        ++written;
+        num /= 10;
+      } while (len);
+    }
+  }
+  return written;
+}
 int convert_x(char *str, flags_t flags, va_list *args) { return 0; }
 int convert_o(char *str, flags_t flags, va_list *args) { return 0; }
 int convert_e(char *str, flags_t flags, va_list *args) { return 0; }
