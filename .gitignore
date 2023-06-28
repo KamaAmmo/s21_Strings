@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+.DS_Store
+*.code-workspace
+*.gcda
+*.gcno
+s21_string_tests
+.vscode
