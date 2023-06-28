@@ -1,3 +1,14 @@
 #include "../s21_string.h"
 
-char *s21_strrchr(const char *str, int c) { return NULL; }
+//находит последнее вхождение символа в строку
+
+char* s21_strrchr(const char *str, int c) {
+    char *search = S21_NULL;
+    char* p = (char*)str;
+    while (*p != '\0') {
+      if (*p == c)
+          search = p;
+      p++;
+    }
+    return search;
+}
