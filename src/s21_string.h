@@ -29,6 +29,10 @@ void *s21_to_lower(const char *str);
 void *s21_insert(const char *src, const char *str, size_t start_index);
 void *s21_trim(const char *src, const char *trim_chars);
 
+int check_end_src(const char *src, const char *trim_chars, size_t len1,
+                  size_t len2);
+int check_begin_src(const char *src, const char *trim_chars, size_t len2);
+
 // int s21_sscanf(const char *str, const char *format, ...);
 // int s21_sprintf(char *str, const char *format, ...);
 
