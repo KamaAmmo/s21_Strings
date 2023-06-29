@@ -167,8 +167,51 @@ int convert_u(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
-int convert_x(char *str, flags_t flags, va_list *args) { return 0; }
-int convert_o(char *str, flags_t flags, va_list *args) { return 0; }
+int convert_x(char *str, flags_t flags,
+              va_list *args) {  // это не точно. Рома, нужно проверить
+  unsigned long num = va_arg(*args, unsigned long);
+  int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
+  if (precision != 0 || num != 0 || flags.alt) {
+    if (num == 0) {
+      str[written] = '0';
+      ++written;
+    } else {
+      int len, tmp = num;
+      len = precision > len ? precision : len;
+      char ch;  // добавил
+      do {      // дабоваил условие if
+        if (num % 16 > 9)
+          ch = (char)(48 + num % 16);
+        else
+          ch = (char)(num % 16);
+        str[written + --len] = ch;
+        ++written;
+        num /= 16;
+      } while (len);
+    }
+  }
+  return written;
+}
+
+int convert_o(char *str, flags_t flags, va_list *args) {
+  unsigned long num = va_arg(*args, unsigned long);
+  int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
+  if (precision != 0 || num != 0 || flags.alt) {
+    if (num == 0) {
+      str[written] = '0';
+      ++written;
+    } else {
+      int len, tmp = num;
+      len = precision > len ? precision : len;
+      do {
+        str[written + --len] = '0' + num % 8;
+        ++written;
+        num /= 8;
+      } while (len);
+    }
+  }
+  return written;
+}
 int convert_e(char *str, flags_t flags, va_list *args) { return 0; }
 int convert_g(char *str, flags_t flags, va_list *args) { return 0; }
 

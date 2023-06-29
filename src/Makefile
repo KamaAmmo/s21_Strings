@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -g -Wall -Wextra -std=c11
+FLAGS := -g -Wall -Wextra -std=c11
 TEST_FLAGS := -lcheck -lpthread -lm -lgcov 
 
 FUNCS := funcs/s21_insert.o funcs/s21_memchr.o funcs/s21_memcmp.o funcs/s21_memcpy.o funcs/s21_memset.o funcs/s21_sprintf.o funcs/s21_sscanf.o funcs/s21_strchr.o funcs/s21_strcspn.o funcs/s21_strerror.o funcs/s21_strlen.o funcs/s21_strncat.o funcs/s21_strncmp.o funcs/s21_strncpy.o funcs/s21_strpbrk.o funcs/s21_strrchr.o funcs/s21_strstr.o funcs/s21_strtok.o funcs/s21_to_lower.o funcs/s21_to_upper.o funcs/s21_trim.o
