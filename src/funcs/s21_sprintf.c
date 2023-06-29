@@ -157,6 +157,7 @@ int convert_u(char *str, flags_t flags, va_list *args) {
       ++written;
     } else {
       int len, tmp = num;
+      for (len = 0; tmp; ++len) tmp /= 10;
       len = precision > len ? precision : len;
       do {
         str[written + --len] = '0' + num % 10;
@@ -167,23 +168,29 @@ int convert_u(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
-int convert_x(char *str, flags_t flags,
-              va_list *args) {  // это не точно. Рома, нужно проверить
+int convert_x(char *str, flags_t flags, va_list *args) {
   unsigned long num = va_arg(*args, unsigned long);
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
-  if (precision != 0 || num != 0 || flags.alt) {
+  if (precision != 0 || num != 0) {
     if (num == 0) {
       str[written] = '0';
       ++written;
     } else {
+      int offset = flags.caps ? 'A' : 'a';
+      if (flags.alt) {
+        str[written++] = '0';
+        str[written++] = 'x';
+      }
+
       int len, tmp = num;
+      for (len = 0; tmp; ++len) tmp /= 16;
       len = precision > len ? precision : len;
-      char ch;  // добавил
-      do {      // дабоваил условие if
+      do {
+        char ch;
         if (num % 16 > 9)
-          ch = (char)(48 + num % 16);
+          ch = offset + num % 16 - 10;
         else
-          ch = (char)(num % 16);
+          ch = '0' + num % 16;
         str[written + --len] = ch;
         ++written;
         num /= 16;
@@ -202,6 +209,7 @@ int convert_o(char *str, flags_t flags, va_list *args) {
       ++written;
     } else {
       int len, tmp = num;
+      for (len = 0; tmp; ++len) tmp /= 8;
       len = precision > len ? precision : len;
       do {
         str[written + --len] = '0' + num % 8;
