@@ -4,7 +4,7 @@
 
 int main(void) {
   Suite *test_suites[21];
-  s21_insert(NULL, NULL, 0);
+
   test_suites[0] = suite_memchr();
   test_suites[1] = suite_memcmp();
   test_suites[2] = suite_memcpy();

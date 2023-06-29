@@ -59,6 +59,7 @@ const char *parse_flags(const char *format, flags_t *res) {
         break;
       default:
         cont = false;
+        --f;
     }
   }
   return f;
@@ -98,13 +99,19 @@ int convert_c(char *str, flags_t flags, va_list *args) {
   int written = 0;
   if (flags.size != 2) {
     *str = (unsigned char)va_arg(*args, int);
+    written++;
   } else {
     // TODO:
   }
   return written;
 }
 int convert_d(char *str, flags_t flags, va_list *args) {
-  long num = va_arg(*args, long);
+  long num;
+  if (flags.size == 2)
+    num = va_arg(*args, long);
+  else
+    num = va_arg(*args, int);
+
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
 
   if (precision != 0 || num != 0) {
@@ -124,11 +131,13 @@ int convert_d(char *str, flags_t flags, va_list *args) {
       str[written] = '0';
       ++written;
     } else {
-      int len, tmp = num;
+      int len;
+      long tmp = num;
       for (len = 0; tmp; ++len) tmp /= 10;
-      len = precision > len ? precision : len;
+      len = (precision > len ? precision : len);
+      int start = written;
       do {
-        str[written + --len] = '0' + num % 10;
+        str[start + --len] = '0' + num % 10;
         ++written;
         num /= 10;
       } while (len);
@@ -141,8 +150,11 @@ int convert_s(char *str, flags_t flags, va_list *args) {
   int written = 0;
   if (flags.size != 2) {
     char *arg = va_arg(*args, char *);
-    int len = flags.precision < 0 ? strlen(arg) : flags.precision;
+    int len = flags.precision < 0 || flags.precision > strlen(arg)
+                  ? strlen(arg)
+                  : flags.precision;
     memcpy(str, arg, len);
+    written += len;
   } else {
     // TODO:
   }
@@ -251,8 +263,9 @@ bool is_zero_padding_applicable(flags_t flags, char specifier) {
 }
 
 int pad(char *str, int num, bool zero_padding) {
-  for (int i = 0; i < num; ++i) str[i] = zero_padding ? '0' : ' ';
-  return num;
+  int i;
+  for (i = 0; i < num; ++i) str[i] = zero_padding ? '0' : ' ';
+  return i;
 }
 
 int s21_sprintf(char *str, const char *format, ...) {
@@ -261,16 +274,20 @@ int s21_sprintf(char *str, const char *format, ...) {
 
   int written = 0;
   for (const char *f = format; *f != '\0'; ++f) {
-    if (*f == '%' && *(f + 1) != '%') {
+    if (*f == '%' && *(++f) != '%') {
       flags_t flags = {false};
       f = parse_flags(f, &flags);
       f = parse_format_num(f, &(flags.width), &args);
-      if (*f == '.') f = parse_format_num(f, &(flags.precision), &args);
+      if (*f == '.') ++f;
+      f = parse_format_num(f, &(flags.precision), &args);
       f = parse_size(f, &flags);
       if (!flags.left_just) {
-        int padding = flags.width - perform_conversion(NULL, *f, flags, &args);
+        va_list tmp;
+        va_copy(tmp, args);
+        int len = perform_conversion(&(str[written]), *f, flags, &tmp);
+        va_end(tmp);
         flags.zero_padding = is_zero_padding_applicable(flags, *f);
-        written += pad(&(str[written]), padding, flags.zero_padding);
+        written += pad(&(str[written]), flags.width - len, flags.zero_padding);
         written += perform_conversion(&(str[written]), *f, flags, &args);
       } else {
         int length = perform_conversion(&(str[written]), *f, flags, &args);
@@ -286,6 +303,7 @@ int s21_sprintf(char *str, const char *format, ...) {
       ++written;
     }
   }
+  str[written] = '\0';
 
   va_end(args);
   return written;
