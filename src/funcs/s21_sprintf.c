@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 #include "../s21_string.h"
 
@@ -95,13 +96,36 @@ const char *parse_size(const char *format, flags_t *flags) {
   return ++format;
 }
 
+int convert_ws(char *str, flags_t flags, wchar_t *ws) {
+  size_t in_sz = wcslen(ws);
+  mbstate_t state;
+  memset(&state, 0, sizeof state);
+
+  char *arg = malloc(MB_CUR_MAX * in_sz * sizeof(char));
+  char *p = arg;
+  for (size_t n = 0; n < in_sz; ++n) {
+    int rc = wcrtomb(p, ws[n], &state);
+    if (rc == -1) break;
+    p += rc;
+  }
+
+  int len = flags.precision < 0 || flags.precision > strlen(arg)
+                ? strlen(arg)
+                : flags.precision;
+  memcpy(str, arg, len);
+  free(arg);
+  return len;
+}
+
 int convert_c(char *str, flags_t flags, va_list *args) {
   int written = 0;
   if (flags.size != 2) {
     *str = (unsigned char)va_arg(*args, int);
     written++;
   } else {
-    // TODO:
+    wchar_t chr = va_arg(*args, wint_t);
+    wchar_t chr_capsule[2] = {chr, L'\0'};
+    written += convert_ws(str, flags, chr_capsule);
   }
   return written;
 }
@@ -156,8 +180,10 @@ int convert_s(char *str, flags_t flags, va_list *args) {
     memcpy(str, arg, len);
     written += len;
   } else {
-    // TODO:
+    wchar_t *warg = va_arg(*args, wchar_t *);
+    written += convert_ws(str, flags, warg);
   }
+
   return written;
 }
 int convert_u(char *str, flags_t flags, va_list *args) {
