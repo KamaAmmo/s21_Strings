@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -70,11 +69,18 @@ const char *parse_format_num(const char *format, int *dst, va_list *args) {
   if (*format == '*') {
     *dst = va_arg(*args, int);
   } else {
-    if (isdigit(*format))
-      *dst = atoi(format);
-    else
+    if (*format >= '0' && *format <= '9') {
+      int len = 0;
+      for (const char *p = format; *p >= '0' && *p <= '9'; ++p) ++len;
+
+      *dst = 0;
+      for (int i = len - 1; i >= 0; --i) {
+        *dst += (*format - '0') * pow(10, i);
+        ++format;
+      }
+    } else {
       *dst = -1;
-    while (isdigit(*format)) ++format;
+    }
   }
   return format;
 }
