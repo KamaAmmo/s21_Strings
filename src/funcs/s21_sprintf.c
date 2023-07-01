@@ -73,16 +73,22 @@ const char *parse_format_num(const char *format, int *dst, va_list *args) {
       int len = 0;
       for (const char *p = format; *p >= '0' && *p <= '9'; ++p) ++len;
 
-      *dst = 0;
+      if (dst != NULL) *dst = 0;
       for (int i = len - 1; i >= 0; --i) {
-        *dst += (*format - '0') * pow(10, i);
+        if (dst != NULL) *dst += (*format - '0') * pow(10, i);
         ++format;
       }
     } else {
-      *dst = -1;
+      if (dst != NULL) *dst = -1;
     }
   }
   return format;
+}
+
+int pad(char *str, int num, bool zero_padding) {
+  int i;
+  for (i = 0; i < num; ++i) str[i] = zero_padding ? '0' : ' ';
+  return i;
 }
 
 const char *parse_size(const char *format, flags_t *flags) {
@@ -129,9 +135,15 @@ int convert_c(char *str, flags_t flags, va_list *args) {
     *str = (unsigned char)va_arg(*args, int);
     written++;
   } else {
+    flags.precision = -1;
     wchar_t chr = va_arg(*args, wint_t);
-    wchar_t chr_capsule[2] = {chr, L'\0'};
-    written += convert_ws(str, flags, chr_capsule);
+    if (chr != L'\0') {
+      wchar_t chr_capsule[2] = {chr, L'\0'};
+      written += convert_ws(str, flags, chr_capsule);
+    } else {
+      *str = '\0';
+      ++written;
+    }
   }
   return written;
 }
@@ -157,21 +169,20 @@ int convert_d(char *str, flags_t flags, va_list *args) {
       ++written;
     }
 
-    if (num == 0) {
-      str[written] = '0';
+    int len;
+    long tmp = num;
+    for (len = 0; tmp; ++len) tmp /= 10;
+    len = (precision > len ? precision : len);
+    if (flags.zero_padding)
+      written +=
+          pad(&(str[written]), flags.width - len - written, flags.zero_padding);
+
+    int start = written;
+    do {
+      str[start + --len] = '0' + num % 10;
       ++written;
-    } else {
-      int len;
-      long tmp = num;
-      for (len = 0; tmp; ++len) tmp /= 10;
-      len = (precision > len ? precision : len);
-      int start = written;
-      do {
-        str[start + --len] = '0' + num % 10;
-        ++written;
-        num /= 10;
-      } while (len);
-    }
+      num /= 10;
+    } while (len);
   }
   return written;
 }
@@ -196,19 +207,18 @@ int convert_u(char *str, flags_t flags, va_list *args) {
   unsigned long num = va_arg(*args, unsigned long);
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
   if (precision != 0 || num != 0 || flags.alt) {
-    if (num == 0) {
-      str[written] = '0';
+    int len, tmp = num;
+    for (len = 0; tmp; ++len) tmp /= 10;
+    len = precision > len ? precision : len;
+    if (flags.zero_padding)
+      written += pad(&(str[written]), flags.width - len, flags.zero_padding);
+
+    int start = written;
+    do {
+      str[start + --len] = '0' + num % 10;
       ++written;
-    } else {
-      int len, tmp = num;
-      for (len = 0; tmp; ++len) tmp /= 10;
-      len = precision > len ? precision : len;
-      do {
-        str[written + --len] = '0' + num % 10;
-        ++written;
-        num /= 10;
-      } while (len);
-    }
+      num /= 10;
+    } while (len);
   }
   return written;
 }
@@ -216,30 +226,29 @@ int convert_x(char *str, flags_t flags, va_list *args) {
   unsigned long num = va_arg(*args, unsigned long);
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
   if (precision != 0 || num != 0) {
-    if (num == 0) {
-      str[written] = '0';
-      ++written;
-    } else {
-      int offset = flags.caps ? 'A' : 'a';
-      if (flags.alt) {
-        str[written++] = '0';
-        str[written++] = 'x';
-      }
-
-      int len, tmp = num;
-      for (len = 0; tmp; ++len) tmp /= 16;
-      len = precision > len ? precision : len;
-      do {
-        char ch;
-        if (num % 16 > 9)
-          ch = offset + num % 16 - 10;
-        else
-          ch = '0' + num % 16;
-        str[written + --len] = ch;
-        ++written;
-        num /= 16;
-      } while (len);
+    int offset = flags.caps ? 'A' : 'a';
+    if (flags.alt) {
+      str[written++] = '0';
+      str[written++] = 'x';
     }
+
+    int len, tmp = num;
+    for (len = 0; tmp; ++len) tmp /= 16;
+    len = precision > len ? precision : len;
+    if (flags.zero_padding)
+      written += pad(&(str[written]), flags.width - len, flags.zero_padding);
+
+    int start = written;
+    do {
+      char ch;
+      if (num % 16 > 9)
+        ch = offset + num % 16 - 10;
+      else
+        ch = '0' + num % 16;
+      str[start + --len] = ch;
+      ++written;
+      num /= 16;
+    } while (len);
   }
   return written;
 }
@@ -248,19 +257,18 @@ int convert_o(char *str, flags_t flags, va_list *args) {
   unsigned long num = va_arg(*args, unsigned long);
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
   if (precision != 0 || num != 0 || flags.alt) {
-    if (num == 0) {
-      str[written] = '0';
+    int len, tmp = num;
+    for (len = 0; tmp; ++len) tmp /= 8;
+    len = precision > len ? precision : len;
+    if (flags.zero_padding)
+      written += pad(&(str[written]), flags.width - len, flags.zero_padding);
+
+    int start = written;
+    do {
+      str[start + --len] = '0' + num % 8;
       ++written;
-    } else {
-      int len, tmp = num;
-      for (len = 0; tmp; ++len) tmp /= 8;
-      len = precision > len ? precision : len;
-      do {
-        str[written + --len] = '0' + num % 8;
-        ++written;
-        num /= 8;
-      } while (len);
-    }
+      num /= 8;
+    } while (len);
   }
   return written;
 }
@@ -285,19 +293,15 @@ int perform_conversion(char *str, char specifier, flags_t flags,
   int written = 0;
   if (converters[tolower(specifier) - 97] != NULL)
     written = converters[tolower(specifier) - 97](str, flags, args);
+  else
+    written = -1;
   return written;
 }
 
 bool is_zero_padding_applicable(flags_t flags, char specifier) {
   return flags.zero_padding &&
-         ((strchr("feEgG", specifier) != NULL) ||
+         ((strchr("feEgGc", specifier) != NULL) ||
           ((strchr("duxXo", specifier) != NULL) && flags.precision < 0));
-}
-
-int pad(char *str, int num, bool zero_padding) {
-  int i;
-  for (i = 0; i < num; ++i) str[i] = zero_padding ? '0' : ' ';
-  return i;
 }
 
 int s21_sprintf(char *str, const char *format, ...) {
@@ -311,14 +315,17 @@ int s21_sprintf(char *str, const char *format, ...) {
       f = parse_flags(f, &flags);
       f = parse_format_num(f, &(flags.width), &args);
       if (*f == '.') ++f;
-      f = parse_format_num(f, &(flags.precision), &args);
+      if (*f == '-')
+        f = parse_format_num(f, NULL, &args);
+      else
+        f = parse_format_num(f, &(flags.precision), &args);
       f = parse_size(f, &flags);
       if (!flags.left_just) {
+        flags.zero_padding = is_zero_padding_applicable(flags, *f);
         va_list tmp;
         va_copy(tmp, args);
         int len = perform_conversion(&(str[written]), *f, flags, &tmp);
         va_end(tmp);
-        flags.zero_padding = is_zero_padding_applicable(flags, *f);
         written += pad(&(str[written]), flags.width - len, flags.zero_padding);
         written += perform_conversion(&(str[written]), *f, flags, &args);
       } else {
