@@ -3,6 +3,6 @@
 char *s21_strchr(const char *str, int c) {
     char *res = s21_NULL;
     char *src = (char *)str;
-    while (*src++) if (*src == c) res = src; 
+    while (*src && !res) {if (*src == c) res = src; src++;}
     return res;
 }
