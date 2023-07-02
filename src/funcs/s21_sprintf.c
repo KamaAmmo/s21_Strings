@@ -204,7 +204,12 @@ int convert_s(char *str, flags_t flags, va_list *args) {
   return written;
 }
 int convert_u(char *str, flags_t flags, va_list *args) {
-  unsigned long num = va_arg(*args, unsigned long);
+  unsigned long num;
+  if (flags.size == 2)
+    num = va_arg(*args, unsigned long);
+  else
+    num = va_arg(*args, unsigned int);
+
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
   if (precision != 0 || num != 0 || flags.alt) {
     int len;
@@ -224,7 +229,12 @@ int convert_u(char *str, flags_t flags, va_list *args) {
   return written;
 }
 int convert_x(char *str, flags_t flags, va_list *args) {
-  unsigned long num = va_arg(*args, unsigned long);
+  unsigned long num;
+  if (flags.size == 2)
+    num = va_arg(*args, unsigned long);
+  else
+    num = va_arg(*args, unsigned int);
+
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
   if (precision != 0 || num != 0) {
     int offset = flags.caps ? 'A' : 'a';
@@ -256,7 +266,12 @@ int convert_x(char *str, flags_t flags, va_list *args) {
 }
 
 int convert_o(char *str, flags_t flags, va_list *args) {
-  unsigned long num = va_arg(*args, unsigned long);
+  unsigned long num;
+  if (flags.size == 2)
+    num = va_arg(*args, unsigned long);
+  else
+    num = va_arg(*args, unsigned int);
+
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
   if (precision != 0 || num != 0 || flags.alt) {
     int len;
