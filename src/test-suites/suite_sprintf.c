@@ -2,6 +2,7 @@
 
 #include "../s21_string_tests.h"
 
+// One argument tests
 #define CSTR_N 5
 const char *const_str[CSTR_N] = {"Hello, World!", "line1\nline2\nline3",
                                  "hmm\0huh?", "", "%%"};
@@ -50,7 +51,8 @@ const wchar_t *wstr_v[WSTR_M] = {L"Привет, мир!", L"Ⲯ⧃①♑ⶍ≃�
 #define UINT_M 8
 const char *uint_f[INT_N] = {"[%d]",  "[%5d]",  "[%-5d]", "[%+d]",
                              "[% d]", "[%+ d]", "[%+5d]", "[% 5d]"};
-const unsigned int uint_v[INT_M] = {0, 5, -5, 100000, 12116, INT32_MAX, 256, 8};
+const unsigned int uint_v[INT_M] = {0,     5,          -5,  100000,
+                                    12116, UINT32_MAX, 256, 8};
 
 #define HEX_N 18
 const char *hex_f[HEX_N] = {"[%x]",   "[%5x]",  "[%-5x]", "[%+x]",  "[% x]",
@@ -79,7 +81,7 @@ const char *gspec_f[GSPEC_N] = {"[%g]",     "[%5g]",  "[%-5g]",  "[%+g]",
                                 "[%+.-5g]", "%06g",   "%#g",     "%G"};
 // reuses double_v
 
-START_TEST(const_str_test) {
+START_TEST(const_str_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, const_str[_i], NULL);
@@ -88,7 +90,7 @@ START_TEST(const_str_test) {
   ck_assert_str_eq(str, str_s21);
 }
 
-START_TEST(char_test) {
+START_TEST(char_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, char_f[_i / CHAR_M], char_v[_i % CHAR_M]);
@@ -109,7 +111,7 @@ START_TEST(wchar_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
-START_TEST(int_test) {
+START_TEST(int_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, int_f[_i / INT_M], int_v[_i % INT_M]);
@@ -128,7 +130,7 @@ START_TEST(double_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
-START_TEST(str_test) {
+START_TEST(str_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, str_f[_i / STR_M], str_v[_i % STR_M]);
@@ -137,7 +139,7 @@ START_TEST(str_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
-START_TEST(wstr_test) {
+START_TEST(wstr_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, wstr_f[_i / 5], wstr_v[_i % 5]);
@@ -146,7 +148,7 @@ START_TEST(wstr_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
-START_TEST(uint_test) {
+START_TEST(uint_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, uint_f[_i / UINT_M], int_v[_i % UINT_M]);
@@ -155,7 +157,7 @@ START_TEST(uint_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
-START_TEST(hex_test) {
+START_TEST(hex_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, hex_f[_i / UINT_M], int_v[_i % UINT_M]);
@@ -164,7 +166,7 @@ START_TEST(hex_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
-START_TEST(oct_test) {
+START_TEST(oct_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, oct_f[_i / UINT_M], int_v[_i % UINT_M]);
@@ -173,7 +175,7 @@ START_TEST(oct_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
-START_TEST(exp_test) {
+START_TEST(exp_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, exp_f[_i / DOUBLE_M], double_v[_i % DOUBLE_M]);
@@ -183,7 +185,7 @@ START_TEST(exp_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
-START_TEST(gspec_test) {
+START_TEST(gspec_t) {
   char str[100];
   char str_s21[100];
   int r_val = sprintf(str, gspec_f[_i / DOUBLE_M], double_v[_i % DOUBLE_M]);
@@ -193,23 +195,65 @@ START_TEST(gspec_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
+// Multi argument tests
+START_TEST(star_t) {
+  char str[100];
+  char str_s21[100];
+  int r_val = sprintf(str, "[%*.*d]", 10, 5, 25);
+  int r_val_s21 = s21_sprintf(str_s21, "[%*.*d]", 10, 5, 25);
+  ck_assert_str_eq(str, str_s21);
+  ck_assert_int_eq(r_val, r_val_s21);
+}
+
+START_TEST(combo_t) {
+  char str[100];
+  char str_s21[100];
+  int r_val = sprintf(str, "[%da%s%o%x]", 10, "Hello!", 256, 256);
+  int r_val_s21 = s21_sprintf(str_s21, "[%da%s%o%x]", 10, "Hello!", 256, 256);
+  ck_assert_str_eq(str, str_s21);
+  ck_assert_int_eq(r_val, r_val_s21);
+}
+
+// Crash tests
+#define BAD_FORMAT_N 6
+const char *bad_format_f[BAD_FORMAT_N] = {"a%",  "%d% %o", "%d%q %o",
+                                          "%.d", "%5.-5d", "%.2"};
+START_TEST(bad_format_t) {
+  char str[100];
+  char str_s21[100];
+  int r_val = sprintf(str, bad_format_f[_i], 10, "Hello!", 256, 256);
+  int r_val_s21 =
+      s21_sprintf(str_s21, bad_format_f[_i], 10, "Hello!", 256, 256);
+  ck_assert_str_eq(str, str_s21);
+  ck_assert_int_eq(r_val, r_val_s21);
+}
+
 Suite *suite_sprintf() {
   Suite *s = suite_create("s21_sprintf");
 
-  TCase *tc_base = tcase_create("Loops");
-  tcase_add_loop_test(tc_base, const_str_test, 0, CSTR_N);
-  tcase_add_loop_test(tc_base, char_test, 0, CHAR_N * CHAR_M);
-  tcase_add_loop_test(tc_base, wchar_test, 0, WCHAR_N * WCHAR_M);
-  tcase_add_loop_test(tc_base, int_test, 0, INT_N * INT_M);
-  // tcase_add_loop_test(tc_base, double_test, 0, DOUBLE_N * DOUBLE_M);
-  tcase_add_loop_test(tc_base, str_test, 0, STR_N * STR_M);
-  tcase_add_loop_test(tc_base, wstr_test, 0, WSTR_N * WSTR_M);
-  tcase_add_loop_test(tc_base, uint_test, 0, UINT_N * UINT_M);
-  tcase_add_loop_test(tc_base, hex_test, 0, HEX_N * UINT_M);
-  tcase_add_loop_test(tc_base, oct_test, 0, OCT_N * UINT_M);
-  // tcase_add_loop_test(tc_base, exp_test, 0, EXP_N * DOUBLE_M);
-  // tcase_add_loop_test(tc_base, gspec_test, 0, GSPEC_N * DOUBLE_M);
-  suite_add_tcase(s, tc_base);
+  TCase *tc_one_arg = tcase_create("OneArg");
+  tcase_add_loop_test(tc_one_arg, const_str_t, 0, CSTR_N);
+  tcase_add_loop_test(tc_one_arg, char_t, 0, CHAR_N * CHAR_M);
+  tcase_add_loop_test(tc_one_arg, wchar_test, 0, WCHAR_N * WCHAR_M);
+  tcase_add_loop_test(tc_one_arg, int_t, 0, INT_N * INT_M);
+  // tcase_add_loop_test(tc_one_arg, double_test, 0, DOUBLE_N * DOUBLE_M);
+  tcase_add_loop_test(tc_one_arg, str_t, 0, STR_N * STR_M);
+  tcase_add_loop_test(tc_one_arg, wstr_t, 0, WSTR_N * WSTR_M);
+  tcase_add_loop_test(tc_one_arg, uint_t, 0, UINT_N * UINT_M);
+  tcase_add_loop_test(tc_one_arg, hex_t, 0, HEX_N * UINT_M);
+  tcase_add_loop_test(tc_one_arg, oct_t, 0, OCT_N * UINT_M);
+  // tcase_add_loop_test(tc_one_arg, exp_t, 0, EXP_N * DOUBLE_M);
+  // tcase_add_loop_test(tc_one_arg, gspec_t, 0, GSPEC_N * DOUBLE_M);
+  suite_add_tcase(s, tc_one_arg);
+
+  TCase *tc_multi_arg = tcase_create("MultiArg");
+  tcase_add_test(tc_multi_arg, star_t);
+  tcase_add_test(tc_multi_arg, combo_t);
+  suite_add_tcase(s, tc_multi_arg);
+
+  TCase *tc_crash_test = tcase_create("CrashTests");
+  tcase_add_loop_test(tc_crash_test, bad_format_t, 0, BAD_FORMAT_N);
+  suite_add_tcase(s, tc_crash_test);
 
   return s;
 }

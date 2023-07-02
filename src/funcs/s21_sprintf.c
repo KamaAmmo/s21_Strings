@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -68,6 +69,7 @@ const char *parse_flags(const char *format, flags_t *res) {
 const char *parse_format_num(const char *format, int *dst, va_list *args) {
   if (*format == '*') {
     *dst = va_arg(*args, int);
+    ++format;
   } else {
     if (*format >= '0' && *format <= '9') {
       int len = 0;
