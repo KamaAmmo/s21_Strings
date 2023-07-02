@@ -52,15 +52,17 @@ const char *uint_f[INT_N] = {"[%d]",  "[%5d]",  "[%-5d]", "[%+d]",
                              "[% d]", "[%+ d]", "[%+5d]", "[% 5d]"};
 const unsigned int uint_v[INT_M] = {0, 5, -5, 100000, 12116, INT32_MAX, 256, 8};
 
-#define HEX_N 16
-const char *hex_f[HEX_N] = {
-    "[%x]", "[%5x]", "[%-5x]", "[%+x]", "[% x]", "[%+ x]", "[%+5x]", "[% 5x]",
-    "[%X]", "[%5X]", "[%-5X]", "[%+X]", "[% X]", "[%+ X]", "[%+5X]", "[% 5X]"};
+#define HEX_N 18
+const char *hex_f[HEX_N] = {"[%x]",   "[%5x]",  "[%-5x]", "[%+x]",  "[% x]",
+                            "[%+ x]", "[%+5x]", "[% 5x]", "[%.0x]", "[%X]",
+                            "[%5X]",  "[%-5X]", "[%+X]",  "[% X]",  "[%+ X]",
+                            "[%+5X]", "[% 5X]", "[%.0X]"};
 // reuses uint_v
 
-#define OCT_N 8
-const char *oct_f[OCT_N] = {"[%o]",  "[%5o]",  "[%-5o]", "[%+o]",
-                            "[% o]", "[%+ o]", "[%+5o]", "[% 5o]"};
+#define OCT_N 11
+const char *oct_f[OCT_N] = {"[%o]",   "[%5o]",  "[%-5o]", "[%+o]",
+                            "[% o]",  "[%+ o]", "[%+5o]", "[% 5o]",
+                            "[%.0o]", "[%#o]",  "[%#.0o]"};
 // reuses uint_v
 
 START_TEST(const_str_test) {
@@ -169,8 +171,8 @@ Suite *suite_sprintf() {
   tcase_add_loop_test(tc_base, str_test, 0, STR_N * STR_M);
   tcase_add_loop_test(tc_base, wstr_test, 0, WSTR_N * WSTR_M);
   tcase_add_loop_test(tc_base, uint_test, 0, UINT_N * UINT_M);
-  // tcase_add_loop_test(tc_base, hex_test, 0, HEX_N * UINT_M);
-  // tcase_add_loop_test(tc_base, oct_test, 0, OCT_N * UINT_M);
+  tcase_add_loop_test(tc_base, hex_test, 0, HEX_N * UINT_M);
+  tcase_add_loop_test(tc_base, oct_test, 0, OCT_N * UINT_M);
   suite_add_tcase(s, tc_base);
 
   return s;
