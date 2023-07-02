@@ -24,15 +24,15 @@ const char *int_f[INT_N] = {"[%d]",     "[%5d]",  "[%-5d]", "[%+d]", "[% d]",
                             "[%05.2d]", "%.3d",   "[%#5d]"};
 const int int_v[INT_M] = {0, 5, -5, 100000, 12116, INT32_MAX, -256, -8};
 
-#define DOUBLE_N 15
-#define DOUBLE_M 10
+#define DOUBLE_N 16
+#define DOUBLE_M 12
 const char *double_f[DOUBLE_N] = {"[%f]",     "[%5f]",  "[%-5f]",  "[%+f]",
                                   "[% f]",    "[%+ f]", "[%+5f]",  "[% 5f]",
                                   "%.0f",     "[%.5f]", "[%5.0f]", "[%-5.15f]",
-                                  "[%+.-5f]", "%06f",   "%#f"};
+                                  "[%+.-5f]", "%06f",   "%#f",     "%F"};
 const double double_v[DOUBLE_M] = {
-    0.0,     -0.0,    25,       253.505,   1.28887484e-15,
-    DBL_MIN, DBL_MAX, INFINITY, -INFINITY, NAN};
+    0.0,     -0.0,    25,      253.505,  1.28887484e-15, 0.3333333333,
+    25e+100, DBL_MIN, DBL_MAX, INFINITY, -INFINITY,      NAN};
 
 #define STR_N 5
 #define STR_M 5
@@ -64,6 +64,20 @@ const char *oct_f[OCT_N] = {"[%o]",   "[%5o]",  "[%-5o]", "[%+o]",
                             "[% o]",  "[%+ o]", "[%+5o]", "[% 5o]",
                             "[%.0o]", "[%#o]",  "[%#.0o]"};
 // reuses uint_v
+
+#define EXP_N 16
+const char *exp_f[EXP_N] = {"[%g]",     "[%5e]",  "[%-5e]",  "[%+g]",
+                            "[% g]",    "[%+ g]", "[%+5e]",  "[% 5e]",
+                            "%.0e",     "[%.5e]", "[%5.0e]", "[%-5.15e]",
+                            "[%+.-5e]", "%06e",   "%#f",     "%F"};
+// reuses double_v
+
+#define GSPEC_N 16
+const char *gspec_f[GSPEC_N] = {"[%g]",     "[%5g]",  "[%-5g]",  "[%+g]",
+                                "[% g]",    "[%+ g]", "[%+5g]",  "[% 5g]",
+                                "%.0g",     "[%.5g]", "[%5.0g]", "[%-5.15g]",
+                                "[%+.-5g]", "%06g",   "%#g",     "%G"};
+// reuses double_v
 
 START_TEST(const_str_test) {
   char str[100];
@@ -159,6 +173,26 @@ START_TEST(oct_test) {
   ck_assert_int_eq(r_val, r_val_s21);
 }
 
+START_TEST(exp_test) {
+  char str[100];
+  char str_s21[100];
+  int r_val = sprintf(str, exp_f[_i / DOUBLE_M], double_v[_i % DOUBLE_M]);
+  int r_val_s21 =
+      s21_sprintf(str_s21, exp_f[_i / DOUBLE_M], double_v[_i % DOUBLE_M]);
+  ck_assert_str_eq(str, str_s21);
+  ck_assert_int_eq(r_val, r_val_s21);
+}
+
+START_TEST(gspec_test) {
+  char str[100];
+  char str_s21[100];
+  int r_val = sprintf(str, gspec_f[_i / DOUBLE_M], double_v[_i % DOUBLE_M]);
+  int r_val_s21 =
+      s21_sprintf(str_s21, gspec_f[_i / DOUBLE_M], double_v[_i % DOUBLE_M]);
+  ck_assert_str_eq(str, str_s21);
+  ck_assert_int_eq(r_val, r_val_s21);
+}
+
 Suite *suite_sprintf() {
   Suite *s = suite_create("s21_sprintf");
 
@@ -167,12 +201,14 @@ Suite *suite_sprintf() {
   tcase_add_loop_test(tc_base, char_test, 0, CHAR_N * CHAR_M);
   tcase_add_loop_test(tc_base, wchar_test, 0, WCHAR_N * WCHAR_M);
   tcase_add_loop_test(tc_base, int_test, 0, INT_N * INT_M);
-  // tcase_add_loop_test(tc_base, double_test, 0, DOUBLE_N*DOUBLE_M);
+  // tcase_add_loop_test(tc_base, double_test, 0, DOUBLE_N * DOUBLE_M);
   tcase_add_loop_test(tc_base, str_test, 0, STR_N * STR_M);
   tcase_add_loop_test(tc_base, wstr_test, 0, WSTR_N * WSTR_M);
   tcase_add_loop_test(tc_base, uint_test, 0, UINT_N * UINT_M);
   tcase_add_loop_test(tc_base, hex_test, 0, HEX_N * UINT_M);
   tcase_add_loop_test(tc_base, oct_test, 0, OCT_N * UINT_M);
+  // tcase_add_loop_test(tc_base, exp_test, 0, EXP_N * DOUBLE_M);
+  // tcase_add_loop_test(tc_base, gspec_test, 0, GSPEC_N * DOUBLE_M);
   suite_add_tcase(s, tc_base);
 
   return s;
