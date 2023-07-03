@@ -55,11 +55,3 @@ int check_end_src(const char *src, const char *trim_chars, size_t len1,
   }
   return (e0 == len2) ? 1 : 0;
 }
-
-int main() {
-  char r[10] = "abc f abc";
-  char f[30] = "ab";
-  char *y = malloc(10 * sizeof(char));
-  y = s21_trim(r, f);
-  printf("%s", y);
-}
