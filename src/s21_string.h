@@ -33,7 +33,7 @@ int check_end_src(const char *src, const char *trim_chars, size_t len1,
                   size_t len2);
 int check_begin_src(const char *src, const char *trim_chars, size_t len2);
 
-// int s21_sscanf(const char *str, const char *format, ...);
-// int s21_sprintf(char *str, const char *format, ...);
+int s21_sscanf(const char *str, const char *format, ...);
+int s21_sprintf(char *str, const char *format, ...);
 
 #endif  // S21_STRING_H
