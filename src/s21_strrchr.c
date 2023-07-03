@@ -1,15 +1,18 @@
-#include "../s21_string.h" //скорректирую эту строчку, когда появится общий хэдер
+#include "../s21_string.h"
 
 //находит последнее вхождение символа в строку
 
-char* s21_strrchr(const char *str, int c) {
-    char *search = S21_NULL;
+char* s21_strrchr(const char* str, int c) {
+    char* search = s21_NULL;
     char* p = (char*)str;
     while (*p != '\0') {
-      if (*p == c)
-          search = p;
-      p++;
+        if (*p == c) {
+            search = p;
+        }
+        p++;
     }
+    if (c == '\0')
+        search = "";
     return search;
 }
 
