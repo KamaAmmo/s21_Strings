@@ -2,7 +2,7 @@
 #define S21_STRING_H
 #include <stdlib.h>
 #ifndef NULL
-#define NULL ((void *)0)
+#define s21_NULL ((void *)0)
 #endif  // NULL
 typedef unsigned long size_t;
 
