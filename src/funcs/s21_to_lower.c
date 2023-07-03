@@ -1,7 +1,7 @@
 #include "../s21_string.h"
 
 void *s21_to_lower(const char *str) {
-  char *tmp = NULL;
+  char *tmp = s21_NULL;
   if (str) {
     size_t len = s21_strlen(str);
     tmp = malloc((len + 1) * sizeof(char));
