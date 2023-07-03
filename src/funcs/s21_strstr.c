@@ -1,7 +1,7 @@
 #include "../s21_string.h"
 
 char *s21_strstr(const char *haystack, const char *needle) {
-    char *search = s21_NULL;
+    char *search = NULL;
     char *hay = (char*)haystack;
     if (*needle == '\0')
         search = (char*)haystack;
@@ -12,11 +12,11 @@ char *s21_strstr(const char *haystack, const char *needle) {
                 char* nd = (char*)needle;
                 for (; *nd != '\0'; nd++, hay++) {
                     if (*hay == '\0') {
-                        search = s21_NULL;
+                        search = NULL;
                         break;
                     }
                     if (*hay != *nd)
-                        search = s21_NULL;
+                        search = NULL;
                 }
             }
         }
