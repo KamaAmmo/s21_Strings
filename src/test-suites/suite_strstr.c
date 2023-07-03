@@ -12,23 +12,24 @@
 #include "../s21_string_tests.h"
 
 START_TEST(test_strstr_1) {
-    char example1[256] = "I like Linux";
-    char needle[256] = "Linux";
-    ck_assert_str_eq(strstr(example1, needle), s21_strstr(example1, needle));
+  char example1[256] = "I like Linux";
+  char needle[256] = "Linux";
+  ck_assert_str_eq(strstr(example1, needle), s21_strstr(example1, needle));
 }
 END_TEST
 
 START_TEST(test_strstr_2) {
-    char example1[256] = "sdfefff\n";
-    char needle[256] = "\n";
-    ck_assert_str_eq(strstr(example1, needle), s21_strstr(example1, needle));
+  char example1[256] = "sdfefff\n";
+  char needle[256] = "\n";
+  ck_assert_str_eq(strstr(example1, needle), s21_strstr(example1, needle));
 }
 END_TEST
 
-START_TEST(test_strstr_3) {
-    char example1[256] = "''''\0''''";
-    char needle[256] = "\0";
-    ck_assert_str_eq(strstr(example1, needle), s21_strstr(example1, needle));
+START_TEST(test_strstr_3)  //!!!!!!!!!!!!!!!!!!!!
+{
+  char example1[256] = "''''\0''''";
+  char needle[256] = "\0";
+  ck_assert_str_eq(strstr(example1, needle), s21_strstr(example1, needle));
 }
 END_TEST
 

@@ -15,4 +15,3 @@ char* s21_strrchr(const char* str, int c) {
         search = "";
     return search;
 }
-
