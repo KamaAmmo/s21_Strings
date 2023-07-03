@@ -1,10 +1,15 @@
 #ifndef S21_STRING_H
 #define S21_STRING_H
+
 #include <stdlib.h>
+
 #ifndef NULL
 #define s21_NULL ((void *)0)
 #endif  // NULL
+#ifndef _SIZE_T
+#define _SIZE_T
 typedef unsigned long size_t;
+#endif /* _SIZE_T */
 
 void *s21_memchr(const void *str, int c, size_t n);
 int s21_memcmp(const void *str1, const void *str2, size_t n);
