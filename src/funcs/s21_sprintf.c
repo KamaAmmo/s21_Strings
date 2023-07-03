@@ -108,23 +108,6 @@ const char *parse_size(const char *format, flags_t *flags) {
   return ++format;
 }
 
-int print_integer(char *str, flags_t flags, unsigned long num) {
-  int len, written = 0;
-  unsigned long tmp = num;
-  for (len = 0; tmp; ++len) tmp /= 10;
-  len = flags.precision > len ? flags.precision : len;
-  if (flags.zero_padding)
-    written += pad(&(str[written]), flags.width - len, flags.zero_padding);
-
-  int start = written;
-  do {
-    str[start + --len] = '0' + num % 10;
-    ++written;
-    num /= 10;
-  } while (len);
-  return written;
-}
-
 int convert_ws(char *str, flags_t flags, wchar_t *ws) {
   size_t in_sz = wcslen(ws);
   mbstate_t state;
@@ -145,7 +128,6 @@ int convert_ws(char *str, flags_t flags, wchar_t *ws) {
   free(arg);
   return len;
 }
-
 int convert_c(char *str, flags_t flags, va_list *args) {
   int written = 0;
   if (flags.size != 2) {
@@ -207,6 +189,23 @@ int convert_d(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
+int fint_part_len(long double integer_part) {
+  long double tmp = integer_part;
+  int int_len = 0;
+  for (int_len = 0; fabsl(tmp) >= 1.; ++int_len) tmp /= 10;
+  if (integer_part == 0.) int_len = 1;
+  return int_len;
+}
+int fint_part_convert(char *str, flags_t flags, long double num, int len) {
+  int written = 0;
+  int start = written;
+  do {
+    str[start + --len] = '0' + (int)fmod(num, 10);
+    ++written;
+    num /= 10;
+  } while (len);
+  return written;
+}
 int convert_f(char *str, flags_t flags, va_list *args) {
   long double num;
   if (flags.size == 2)
@@ -241,9 +240,29 @@ int convert_f(char *str, flags_t flags, va_list *args) {
       strcpy(&(str[written]), "nan");
     flags.zero_padding = false;
     written += 3;
-  } else if (flags.precision == 0) {
-    written +=
-        print_integer(&(str[written]), flags, (unsigned long)roundl(num));
+  } else {
+    long double integer_part = flags.precision == 0 ? roundl(num) : floorl(num);
+    int int_len = fint_part_len(integer_part);
+    int fract_len = flags.precision == -1 ? 6 : flags.precision;
+    int len = int_len + fract_len;
+    if (flags.zero_padding)
+      written += pad(&(str[written]), flags.width - len, flags.zero_padding);
+
+    written += fint_part_convert(&(str[written]), flags, integer_part, int_len);
+
+    if (flags.precision != 0 || flags.alt) {
+      str[written] = '.';
+      ++written;
+    }
+
+    long double fractional_part = num - integer_part;
+    long double tmp = fractional_part;
+    for (int l = fract_len - 1; l > 0; --l) {
+      fractional_part *= 10;
+      int digit = fmod(fractional_part, 10);
+      str[written] = '0' + digit;
+      fractional_part -= digit;
+    }
   }
   return written;
 }
@@ -273,7 +292,19 @@ int convert_u(char *str, flags_t flags, va_list *args) {
   int written = 0;
   flags.precision = flags.precision < 0 ? 1 : flags.precision;
   if (flags.precision != 0 || num != 0 || flags.alt) {
-    written = print_integer(str, flags, num);
+    int len;
+    unsigned long tmp = num;
+    for (len = 0; tmp; ++len) tmp /= 10;
+    len = flags.precision > len ? flags.precision : len;
+    if (flags.zero_padding)
+      written += pad(&(str[written]), flags.width - len, flags.zero_padding);
+
+    int start = written;
+    do {
+      str[start + --len] = '0' + num % 10;
+      ++written;
+      num /= 10;
+    } while (len);
   }
   return written;
 }
@@ -347,21 +378,21 @@ int convert_g(char *str, flags_t flags, va_list *args) { return 0; }
 int perform_conversion(char *str, char specifier, flags_t flags,
                        va_list *args) {
   int (*converters[26])(char *, flags_t, va_list *) = {NULL};
-  converters['c' - 97] = convert_c;
-  converters['d' - 97] = convert_d;
-  converters['f' - 97] = convert_f;
-  converters['s' - 97] = convert_s;
-  converters['u' - 97] = convert_u;
-  converters['x' - 97] = convert_x;
-  converters['o' - 97] = convert_o;
-  converters['e' - 97] = convert_e;
-  converters['g' - 97] = convert_g;
+  converters['c' - 'a'] = convert_c;
+  converters['d' - 'a'] = convert_d;
+  converters['f' - 'a'] = convert_f;
+  converters['s' - 'a'] = convert_s;
+  converters['u' - 'a'] = convert_u;
+  converters['x' - 'a'] = convert_x;
+  converters['o' - 'a'] = convert_o;
+  converters['e' - 'a'] = convert_e;
+  converters['g' - 'a'] = convert_g;
 
   if (isupper(specifier)) flags.caps = true;
 
   int written = 0;
-  if (converters[tolower(specifier) - 97] != NULL) {
-    written = converters[tolower(specifier) - 97](str, flags, args);
+  if (converters[tolower(specifier) - 'a'] != NULL) {
+    written = converters[tolower(specifier) - 'a'](str, flags, args);
   } else if (specifier == '%') {
     str[written] = specifier;
     ++written;
