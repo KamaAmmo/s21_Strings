@@ -10,4 +10,5 @@ int s21_strncmp(
     res = p1[i] - p2[i];
     if (!p1[i] || !p2[i]) break;
     }
+  return res;
 }     
