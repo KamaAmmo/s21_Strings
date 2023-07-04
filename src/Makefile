@@ -29,6 +29,7 @@ test: s21_string_tests
 gcov_report: test
 	lcov -t "report" -o report.info -c -d .
 	genhtml -o "html_report" report.info
+	open ./html_report/index.html
 
 leaks: s21_string_tests
 	leaks -atExit -- ./s21_string_tests

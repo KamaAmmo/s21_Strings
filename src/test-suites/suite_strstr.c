@@ -40,6 +40,20 @@ START_TEST(test_strstr_4) {
 }
 END_TEST
 
+START_TEST(test_strstr_5) {
+  char example1[256] = "this is a test string";
+  char needle[256] = "a test 2";
+  ck_assert_ptr_eq(strstr(example1, needle), s21_strstr(example1, needle));
+}
+END_TEST
+
+START_TEST(test_strstr_6) {
+  char example1[256] = "this is a test string";
+  char needle[256] = "string and";
+  ck_assert_ptr_eq(strstr(example1, needle), s21_strstr(example1, needle));
+}
+END_TEST
+
 Suite *suite_strstr() {
   Suite *s = suite_create("s21_strstr");
 
@@ -49,6 +63,8 @@ Suite *suite_strstr() {
   tcase_add_test(tc_core, test_strstr_2);
   tcase_add_test(tc_core, test_strstr_3);
   tcase_add_test(tc_core, test_strstr_4);
+  tcase_add_test(tc_core, test_strstr_5);
+  tcase_add_test(tc_core, test_strstr_6);
 
   suite_add_tcase(s, tc_core);
 

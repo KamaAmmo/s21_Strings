@@ -25,7 +25,7 @@ int check_end_src(const char *src, const char *trim_chars, size_t len1,
 }
 
 void *s21_trim(const char *src, const char *trim_chars) {
-  char *tmp = NULL;
+  char *tmp = s21_NULL;
   size_t len1 = s21_strlen(src);
   size_t len2 = s21_strlen(trim_chars);
   if (src) {
