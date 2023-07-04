@@ -1,6 +1,6 @@
 #include "../s21_string.h"
 
-//первое вхождение подстроки в строку
+// первое вхождение подстроки в строку
 
 char *s21_strstr(const char *haystack, const char *needle) {
   char *search = NULL;

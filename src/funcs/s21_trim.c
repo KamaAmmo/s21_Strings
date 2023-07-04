@@ -1,6 +1,29 @@
 #include <stdio.h>
 
 #include "../s21_string.h"
+
+// int check_end_src(const char *src, const char *trim_chars, size_t len1,
+//                   size_t len2);
+// int check_begin_src(const char *src, const char *trim_chars, size_t len2);
+
+int check_begin_src(const char *src, const char *trim_chars, size_t len2) {
+  int j = 0;
+  while (src[j] == trim_chars[j] && src[j]) {
+    j++;
+  }
+  return (j == len2) ? 1 : 0;
+}
+
+int check_end_src(const char *src, const char *trim_chars, size_t len1,
+                  size_t len2) {
+  int e = len1 - len2, e0 = 0;
+  while (src[e] == trim_chars[e0] && src[e]) {
+    e++;
+    e0++;
+  }
+  return (e0 == len2) ? 1 : 0;
+}
+
 void *s21_trim(const char *src, const char *trim_chars) {
   char *tmp = NULL;
   size_t len1 = s21_strlen(src);
@@ -36,22 +59,4 @@ void *s21_trim(const char *src, const char *trim_chars) {
     }
   }
   return (void *)tmp;
-}
-
-int check_begin_src(const char *src, const char *trim_chars, size_t len2) {
-  int j = 0;
-  while (src[j] == trim_chars[j] && src[j]) {
-    j++;
-  }
-  return (j == len2) ? 1 : 0;
-}
-
-int check_end_src(const char *src, const char *trim_chars, size_t len1,
-                  size_t len2) {
-  int e = len1 - len2, e0 = 0;
-  while (src[e] == trim_chars[e0] && src[e]) {
-    e++;
-    e0++;
-  }
-  return (e0 == len2) ? 1 : 0;
 }
