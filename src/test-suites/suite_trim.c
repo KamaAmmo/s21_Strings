@@ -26,6 +26,7 @@ Suite *suite_trim() {
 
   TCase *tc_core = tcase_create("");
 
+
   tcase_add_test(tc_core, test_trim_1);
   tcase_add_test(tc_core, test_trim_2);
   tcase_add_test(tc_core, test_trim_3);
