@@ -9,10 +9,10 @@ START_TEST(test_insert_1) {
 END_TEST
 
 START_TEST(test_insert_2) {
-  char example1[2] = "ahg";
-  char delim[2] = "vvvvv";
+  char example1[16] = "ahg";
+  char delim[16] = "vvvvv";
   size_t n = 1;
-  ck_assert_str_eq(s21_insert(example1, delim, n), "avvhvv");
+  ck_assert_str_eq(s21_insert(example1, delim, n), "avvvvvhg");
 }
 END_TEST
 
