@@ -243,6 +243,7 @@ int convert_f(char *str, flags_t flags, va_list *args) {
     written += 3;
   } else {
     long double integer_part = flags.precision == 0 ? roundl(num) : floorl(num);
+    long double fractional_part = num - integer_part;
     int int_len = fint_part_len(integer_part);
     int fract_len = flags.precision == -1 ? 6 : flags.precision;
     int len = int_len + fract_len;
@@ -251,12 +252,11 @@ int convert_f(char *str, flags_t flags, va_list *args) {
 
     written += fint_part_convert(&(str[written]), flags, integer_part, int_len);
 
-    if (flags.precision != 0 || flags.alt) {
+    if (fract_len != 0 || flags.alt) {
       str[written] = '.';
       ++written;
     }
-    if (flags.precision != 0) {
-      long double fractional_part = num - integer_part;
+    if (fract_len != 0) {
       long double tmp = fractional_part;
       long int fractNum = 0;
       for (int l = fract_len; l > 0; --l) {
