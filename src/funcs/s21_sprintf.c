@@ -206,6 +206,7 @@ int fint_part_convert(char *str, flags_t flags, long double num, int len) {
   } while (len);
   return written;
 }
+int fract_partconvert(char *str, flags_t flags, long double num, int len) {}
 int convert_f(char *str, flags_t flags, va_list *args) {
   long double num;
   if (flags.size == 2)
@@ -257,12 +258,21 @@ int convert_f(char *str, flags_t flags, va_list *args) {
 
     long double fractional_part = num - integer_part;
     long double tmp = fractional_part;
-    for (int l = fract_len - 1; l > 0; --l) {
+    long int fractNum = 0;
+    for (int l = fract_len; l > 0; --l) {
       fractional_part *= 10;
       int digit = fmod(fractional_part, 10);
-      str[written] = '0' + digit;
+      fractNum += pow(10, l - 1) * digit;
       fractional_part -= digit;
     }
+    if (fractional_part >= 0.5) ++fractNum;
+
+    int start = written;
+    do {
+      str[start + --fract_len] = '0' + fractNum % 10;
+      ++written;
+      fractNum /= 10;
+    } while (fract_len);
   }
   return written;
 }

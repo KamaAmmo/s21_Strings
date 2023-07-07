@@ -31,9 +31,18 @@ const char *double_f[DOUBLE_N] = {"[%f]",   "[%5f]",  "[%-5f]",  "[%+f]",
                                   "[% f]",  "[%+ f]", "[%+5f]",  "[% 5f]",
                                   "%.0f",   "[%.5f]", "[%5.0f]", "[%-5.15f]",
                                   "[%+.f]", "%06f",   "%#f",     "%F"};
-const double double_v[DOUBLE_M] = {
-    0.0,     -0.0,    25,      253.505,  1.28887484e-15, 0.3333333333,
-    25e+100, DBL_MIN, DBL_MAX, INFINITY, -INFINITY,      NAN};
+const double double_v[DOUBLE_M] = {0.0,
+                                   -0.0,
+                                   25,
+                                   253.505,
+                                   1.28887484e-15,
+                                   0.3333333333,
+                                   25e+10,
+                                   0.587784498494449494,
+                                   2132164989746516.,
+                                   INFINITY,
+                                   -INFINITY,
+                                   NAN};
 
 #define STR_N 5
 #define STR_M 5
@@ -68,10 +77,10 @@ const char *oct_f[OCT_N] = {"[%o]",   "[%5o]",  "[%-5o]", "[%+o]",
 // reuses uint_v
 
 #define EXP_N 16
-const char *exp_f[EXP_N] = {"[%g]",     "[%5e]",  "[%-5e]",  "[%+g]",
-                            "[% g]",    "[%+ g]", "[%+5e]",  "[% 5e]",
-                            "%.0e",     "[%.5e]", "[%5.0e]", "[%-5.15e]",
-                            "[%+.-5e]", "%06e",   "%#f",     "%F"};
+const char *exp_f[EXP_N] = {"[%g]",     "[%5e]",   "[%-5e]",  "[%+g]",
+                            "[% g]",    "[%+= g]", "[%+5e]",  "[% 5e]",
+                            "%.0e",     "[%.5e]",  "[%5.0e]", "[%-5.15e]",
+                            "[%+.-5e]", "%06e",    "%#f",     "%F"};
 // reuses double_v
 
 #define GSPEC_N 16
@@ -121,8 +130,8 @@ START_TEST(int_t) {
 }
 
 START_TEST(double_test) {
-  char str[100];
-  char str_s21[100];
+  char str[1000];
+  char str_s21[10000];
   int r_val = sprintf(str, double_f[_i / DOUBLE_M], double_v[_i % DOUBLE_M]);
   int r_val_s21 =
       s21_sprintf(str_s21, double_f[_i / DOUBLE_M], double_v[_i % DOUBLE_M]);
@@ -236,7 +245,7 @@ Suite *suite_sprintf() {
   tcase_add_loop_test(tc_one_arg, char_t, 0, CHAR_N * CHAR_M);
   tcase_add_loop_test(tc_one_arg, wchar_test, 0, WCHAR_N * WCHAR_M);
   tcase_add_loop_test(tc_one_arg, int_t, 0, INT_N * INT_M);
-  // tcase_add_loop_test(tc_one_arg, double_test, 0, DOUBLE_N * DOUBLE_M);
+  tcase_add_loop_test(tc_one_arg, double_test, 0, DOUBLE_N * DOUBLE_M);
   tcase_add_loop_test(tc_one_arg, str_t, 0, STR_N * STR_M);
   tcase_add_loop_test(tc_one_arg, wstr_t, 0, WSTR_N * WSTR_M);
   tcase_add_loop_test(tc_one_arg, uint_t, 0, UINT_N * UINT_M);
