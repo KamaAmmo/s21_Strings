@@ -25,12 +25,12 @@ const char *int_f[INT_N] = {"[%d]",     "[%5d]",  "[%-5d]", "[%+d]", "[% d]",
                             "[%05.2d]", "%.3d",   "[%#5d]"};
 const int int_v[INT_M] = {0, 5, -5, 100000, 12116, INT32_MAX, -256, -8};
 
-#define DOUBLE_N 16
+#define DOUBLE_N 17
 #define DOUBLE_M 12
-const char *double_f[DOUBLE_N] = {"[%f]",   "[%5f]",  "[%-5f]",  "[%+f]",
-                                  "[% f]",  "[%+ f]", "[%+5f]",  "[% 5f]",
-                                  "%.0f",   "[%.5f]", "[%5.0f]", "[%-5.15f]",
-                                  "[%+.f]", "%06f",   "%#f",     "%F"};
+const char *double_f[DOUBLE_N] = {
+    "[%f]",   "[%5f]",  "[%-5f]", "[%+f]",  "[% f]",   "[%+ f]",
+    "[%+5f]", "[% 5f]", "%.0f",   "[%.5f]", "[%5.0f]", "[%-5.15f]",
+    "[%+.f]", "%06f",   "%#f",    "%F",     "%#.0f"};
 const double double_v[DOUBLE_M] = {0.0,
                                    -0.0,
                                    25,
