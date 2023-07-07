@@ -255,24 +255,26 @@ int convert_f(char *str, flags_t flags, va_list *args) {
       str[written] = '.';
       ++written;
     }
+    if (flags.precision != 0) {
+      long double fractional_part = num - integer_part;
+      long double tmp = fractional_part;
+      long int fractNum = 0;
+      for (int l = fract_len; l > 0; --l) {
+        if (flags.precision == 0) printf("%d", l);
+        fractional_part *= 10;
+        int digit = fmod(fractional_part, 10);
+        fractNum += pow(10, l - 1) * digit;
+        fractional_part -= digit;
+      }
+      if (fractional_part >= 0.5) ++fractNum;
 
-    long double fractional_part = num - integer_part;
-    long double tmp = fractional_part;
-    long int fractNum = 0;
-    for (int l = fract_len; l > 0; --l) {
-      fractional_part *= 10;
-      int digit = fmod(fractional_part, 10);
-      fractNum += pow(10, l - 1) * digit;
-      fractional_part -= digit;
+      int start = written;
+      do {
+        str[start + --fract_len] = '0' + fractNum % 10;
+        ++written;
+        fractNum /= 10;
+      } while (fract_len);
     }
-    if (fractional_part >= 0.5) ++fractNum;
-
-    int start = written;
-    do {
-      str[start + --fract_len] = '0' + fractNum % 10;
-      ++written;
-      fractNum /= 10;
-    } while (fract_len);
   }
   return written;
 }
