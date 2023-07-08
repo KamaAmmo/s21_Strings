@@ -255,7 +255,7 @@ Suite *suite_sprintf() {
   tcase_add_loop_test(tc_one_arg, hex_t, 0, HEX_N * UINT_M);
   tcase_add_loop_test(tc_one_arg, oct_t, 0, OCT_N * UINT_M);
   tcase_add_loop_test(tc_one_arg, exp_t, 0, EXP_N * DOUBLE_M);
-  // tcase_add_loop_test(tc_one_arg, gspec_t, 0, GSPEC_N * DOUBLE_M);
+  tcase_add_loop_test(tc_one_arg, gspec_t, 0, GSPEC_N * DOUBLE_M);
   suite_add_tcase(s, tc_one_arg);
 
   TCase *tc_multi_arg = tcase_create("MultiArg");

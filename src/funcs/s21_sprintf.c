@@ -287,7 +287,7 @@ long double bankers_rounding(long double num) {
   }
   return res;
 }
-int f_full_convert(char *str, flags_t flags, long double num) {
+int f_num_convert(char *str, flags_t flags, long double num) {
   long double integer_part =
       flags.precision == 0 ? bankers_rounding(num) : floorl(num);
   long double fractional_part = num - integer_part;
@@ -319,7 +319,7 @@ int convert_f(char *str, flags_t flags, va_list *args) {
 
   int is_nan_inf = fnan_inf_convert(&(str[written]), flags, num);
   written += is_nan_inf;
-  if (is_nan_inf == 0) written += f_full_convert(&(str[written]), flags, num);
+  if (is_nan_inf == 0) written += f_num_convert(&(str[written]), flags, num);
   return written;
 }
 int convert_s(char *str, flags_t flags, va_list *args) {
@@ -400,7 +400,6 @@ int convert_x(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
-
 int convert_o(char *str, flags_t flags, va_list *args) {
   unsigned long num;
   if (flags.size == 2)
@@ -428,6 +427,41 @@ int convert_o(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
+long double frexpldec(long double num, int *exp) {
+  *exp = 0;
+  long double mantissa = num;
+
+  if (mantissa != 0) {
+    if (mantissa >= 10)
+      for (*exp = 0; mantissa >= 10; ++*exp) mantissa /= 10;
+    else
+      for (*exp = 0; mantissa < 1; --*exp) mantissa *= 10;
+  }
+  return mantissa;
+}
+int e_num_convert(char *str, flags_t flags, long double mantissa, int exp) {
+  int written;
+  written += f_num_convert(&(str[written]), flags, mantissa);
+
+  str[written] = flags.caps ? 'E' : 'e';
+  ++written;
+  str[written] = exp < 0 ? '-' : '+';
+  ++written;
+  exp = abs(exp);
+
+  int e_len;
+  long tmp = exp;
+  for (e_len = 0; tmp; ++e_len) tmp /= 10;
+  e_len = (2 > e_len ? 2 : e_len);
+
+  int start = written;
+  do {
+    str[start + --e_len] = '0' + exp % 10;
+    ++written;
+    exp /= 10;
+  } while (e_len);
+  return written;
+}
 int convert_e(char *str, flags_t flags, va_list *args) {
   long double num;
   if (flags.size == 2)
@@ -441,38 +475,39 @@ int convert_e(char *str, flags_t flags, va_list *args) {
   int is_nan_inf = fnan_inf_convert(&(str[written]), flags, num);
   written += is_nan_inf;
   if (is_nan_inf == 0) {
-    int exp = 0;
-    long double mantissa = num;
-
-    if (mantissa != 0) {
-      if (mantissa >= 10)
-        for (exp = 0; mantissa >= 10; ++exp) mantissa /= 10;
-      else
-        for (exp = 0; mantissa < 1; --exp) mantissa *= 10;
-    }
-    written += f_full_convert(&(str[written]), flags, mantissa);
-
-    str[written] = flags.caps ? 'E' : 'e';
-    ++written;
-    str[written] = exp < 0 ? '-' : '+';
-    ++written;
-    exp = abs(exp);
-
-    int e_len;
-    long tmp = exp;
-    for (e_len = 0; tmp; ++e_len) tmp /= 10;
-    e_len = (2 > e_len ? 2 : e_len);
-
-    int start = written;
-    do {
-      str[start + --e_len] = '0' + exp % 10;
-      ++written;
-      exp /= 10;
-    } while (e_len);
+    int exp;
+    long double mantissa = frexpldec(num, &exp);
+    written += e_num_convert(&(str[written]), flags, mantissa, exp);
   }
   return written;
 }
-int convert_g(char *str, flags_t flags, va_list *args) { return 0; }
+int convert_g(char *str, flags_t flags, va_list *args) {
+  long double num;
+  if (flags.size == 2)
+    num = va_arg(*args, long double);
+  else
+    num = va_arg(*args, double);
+
+  int written = fsign_convert(str, flags, num);
+  num = fabsl(num);
+
+  int is_nan_inf = fnan_inf_convert(&(str[written]), flags, num);
+  written += is_nan_inf;
+  if (is_nan_inf == 0) {
+    int exp;
+    long double mantissa = frexpldec(num, &exp);
+    int p = flags.precision == -1 ? 6 : flags.precision;
+    p = p == 0 ? 1 : p;
+    if (p > exp && exp >= -4) {
+      flags.precision = p - 1 - exp;
+      written += f_num_convert(&(str[written]), flags, num);
+    } else {
+      flags.precision = p - 1;
+      written += e_num_convert(&(str[written]), flags, mantissa, exp);
+    }
+  }
+  return written;
+}
 
 int perform_conversion(char *str, char specifier, flags_t flags,
                        va_list *args) {
