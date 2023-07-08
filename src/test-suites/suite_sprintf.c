@@ -26,7 +26,7 @@ const char *int_f[INT_N] = {"[%d]",     "[%5d]",  "[%-5d]", "[%+d]", "[% d]",
 const int int_v[INT_M] = {0, 5, -5, 100000, 12116, INT32_MAX, -256, -8};
 
 #define DOUBLE_N 18
-#define DOUBLE_M 12
+#define DOUBLE_M 13
 const char *double_f[DOUBLE_N] = {
     "[%f]",   "[%5f]",  "[%-5f]", "[%+f]",  "[% f]",   "[%+ f]",
     "[%+5f]", "[% 5f]", "%.0f",   "[%.5f]", "[%5.0f]", "[%-5.15f]",

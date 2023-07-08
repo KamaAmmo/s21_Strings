@@ -189,6 +189,25 @@ int convert_d(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
+int fnan_inf_convert(char *str, flags_t flags, long double num) {
+  int written = 0;
+  if (fabsl(num) == INFINITY) {
+    if (flags.caps)
+      strcpy(&(str[written]), "INF");
+    else
+      strcpy(&(str[written]), "inf");
+    flags.zero_padding = false;
+    written += 3;
+  } else if (isnan(num)) {
+    if (flags.caps)
+      strcpy(&(str[written]), "NAN");
+    else
+      strcpy(&(str[written]), "nan");
+    flags.zero_padding = false;
+    written += 3;
+  }
+  return written;
+}
 int fint_part_len(long double integer_part) {
   long double tmp = integer_part;
   int int_len = 0;
@@ -196,7 +215,7 @@ int fint_part_len(long double integer_part) {
   if (integer_part == 0.) int_len = 1;
   return int_len;
 }
-int fint_part_convert(char *str, flags_t flags, long double num, int len) {
+int fint_part_convert(char *str, long double num, int len) {
   int written = 0;
   int start = written;
   do {
@@ -206,7 +225,25 @@ int fint_part_convert(char *str, flags_t flags, long double num, int len) {
   } while (len);
   return written;
 }
-int fract_partconvert(char *str, flags_t flags, long double num, int len) {}
+int fract_partconvert(char *str, long double fractional_part, int fract_len) {
+  long double tmp = fractional_part;
+  long int fractNum = 0;
+  for (int l = fract_len; l > 0; --l) {
+    fractional_part *= 10;
+    int digit = fmod(fractional_part, 10);
+    fractNum += pow(10, l - 1) * digit;
+    fractional_part -= digit;
+  }
+  if (fractional_part >= 0.5) ++fractNum;
+
+  int written = 0;
+  do {
+    str[--fract_len] = '0' + fractNum % 10;
+    ++written;
+    fractNum /= 10;
+  } while (fract_len);
+  return written;
+}
 int convert_f(char *str, flags_t flags, va_list *args) {
   long double num;
   if (flags.size == 2)
@@ -227,21 +264,9 @@ int convert_f(char *str, flags_t flags, va_list *args) {
     ++written;
   }
 
-  if (fabsl(num) == INFINITY) {
-    if (flags.caps)
-      strcpy(&(str[written]), "INF");
-    else
-      strcpy(&(str[written]), "inf");
-    flags.zero_padding = false;
-    written += 3;
-  } else if (isnan(num)) {
-    if (flags.caps)
-      strcpy(&(str[written]), "NAN");
-    else
-      strcpy(&(str[written]), "nan");
-    flags.zero_padding = false;
-    written += 3;
-  } else {
+  int is_nan_inf = fnan_inf_convert(&(str[written]), flags, num);
+  written += is_nan_inf;
+  if (is_nan_inf == 0) {
     long double integer_part = flags.precision == 0 ? roundl(num) : floorl(num);
     long double fractional_part = num - integer_part;
     int int_len = fint_part_len(integer_part);
@@ -249,32 +274,14 @@ int convert_f(char *str, flags_t flags, va_list *args) {
     int len = int_len + fract_len;
     if (flags.zero_padding)
       written += pad(&(str[written]), flags.width - len, flags.zero_padding);
-
-    written += fint_part_convert(&(str[written]), flags, integer_part, int_len);
+    written += fint_part_convert(&(str[written]), integer_part, int_len);
 
     if (fract_len != 0 || flags.alt) {
       str[written] = '.';
       ++written;
     }
-    if (fract_len != 0) {
-      long double tmp = fractional_part;
-      long int fractNum = 0;
-      for (int l = fract_len; l > 0; --l) {
-        if (flags.precision == 0) printf("%d", l);
-        fractional_part *= 10;
-        int digit = fmod(fractional_part, 10);
-        fractNum += pow(10, l - 1) * digit;
-        fractional_part -= digit;
-      }
-      if (fractional_part >= 0.5) ++fractNum;
-
-      int start = written;
-      do {
-        str[start + --fract_len] = '0' + fractNum % 10;
-        ++written;
-        fractNum /= 10;
-      } while (fract_len);
-    }
+    if (fract_len != 0)
+      written += fract_partconvert(&(str[written]), fractional_part, fract_len);
   }
   return written;
 }
