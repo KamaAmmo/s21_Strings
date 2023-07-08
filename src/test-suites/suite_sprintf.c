@@ -26,18 +26,20 @@ const char *int_f[INT_N] = {"[%d]",     "[%5d]",  "[%-5d]", "[%+d]", "[% d]",
 const int int_v[INT_M] = {0, 5, -5, 100000, 12116, INT32_MAX, -256, -8};
 
 #define DOUBLE_N 18
-#define DOUBLE_M 13
+#define DOUBLE_M 15
 const char *double_f[DOUBLE_N] = {
     "[%f]",   "[%5f]",  "[%-5f]", "[%+f]",  "[% f]",   "[%+ f]",
     "[%+5f]", "[% 5f]", "%.0f",   "[%.5f]", "[%5.0f]", "[%-5.15f]",
     "[%+.f]", "%06f",   "%#f",    "%F",     "%#.0f",   "%.16f"};
 const double double_v[DOUBLE_M] = {0.0,
                                    -0.0,
-                                   25,
-                                   253.505,
+                                   243.500,
+                                   -225,
+                                   -253.5,
                                    1.28887484e-15,
                                    0.3333333333,
                                    25e+10,
+                                   -0.6666666,
                                    0.58778449849444944,
                                    2132164989746516.,
                                    213216498974651.58778449849444944,
@@ -77,11 +79,11 @@ const char *oct_f[OCT_N] = {"[%o]",   "[%5o]",  "[%-5o]", "[%+o]",
                             "[%.0o]", "[%#o]",  "[%#.0o]"};
 // reuses uint_v
 
-#define EXP_N 16
-const char *exp_f[EXP_N] = {"[%g]",     "[%5e]",   "[%-5e]",  "[%+g]",
-                            "[% g]",    "[%+= g]", "[%+5e]",  "[% 5e]",
-                            "%.0e",     "[%.5e]",  "[%5.0e]", "[%-5.15e]",
-                            "[%+.-5e]", "%06e",    "%#f",     "%F"};
+#define EXP_N 17
+const char *exp_f[EXP_N] = {"[%e]",    "[%5e]",     "[%-5e]", "[%+e]", "[% e]",
+                            "[%+ e]",  "[%+5e]",    "[% 5e]", "%.0e",  "[%.5e]",
+                            "[%5.0e]", "[%-5.15e]", "[%.e]",  "%06e",  "%#e",
+                            "%E",      "%#.e"};
 // reuses double_v
 
 #define GSPEC_N 16
@@ -252,7 +254,7 @@ Suite *suite_sprintf() {
   tcase_add_loop_test(tc_one_arg, uint_t, 0, UINT_N * UINT_M);
   tcase_add_loop_test(tc_one_arg, hex_t, 0, HEX_N * UINT_M);
   tcase_add_loop_test(tc_one_arg, oct_t, 0, OCT_N * UINT_M);
-  // tcase_add_loop_test(tc_one_arg, exp_t, 0, EXP_N * DOUBLE_M);
+  tcase_add_loop_test(tc_one_arg, exp_t, 0, EXP_N * DOUBLE_M);
   // tcase_add_loop_test(tc_one_arg, gspec_t, 0, GSPEC_N * DOUBLE_M);
   suite_add_tcase(s, tc_one_arg);
 

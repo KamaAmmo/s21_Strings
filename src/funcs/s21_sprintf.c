@@ -148,6 +148,23 @@ int convert_c(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
+int int_convert(char *str, flags_t flags, long num) {
+  int len, written = 0;
+  long tmp = num;
+  for (len = 0; tmp; ++len) tmp /= 10;
+  len = (flags.precision > len ? flags.precision : len);
+  if (flags.zero_padding)
+    written +=
+        pad(&(str[written]), flags.width - len - written, flags.zero_padding);
+
+  int start = written;
+  do {
+    str[start + --len] = '0' + num % 10;
+    ++written;
+    num /= 10;
+  } while (len);
+  return written;
+}
 int convert_d(char *str, flags_t flags, va_list *args) {
   long num;
   if (flags.size == 2)
@@ -185,7 +202,21 @@ int convert_d(char *str, flags_t flags, va_list *args) {
       ++written;
       num /= 10;
     } while (len);
-    return written;
+  }
+  return written;
+}
+int fsign_convert(char *str, flags_t flags, long double num) {
+  int written = 0;
+  if (signbit(num)) {
+    str[written] = '-';
+    ++written;
+    num *= -1;
+  } else if (flags.show_plus && !isnan(num)) {
+    str[written] = '+';
+    ++written;
+  } else if (flags.plus_space && !isnan(num)) {
+    str[written] = ' ';
+    ++written;
   }
   return written;
 }
@@ -244,6 +275,38 @@ int fract_partconvert(char *str, long double fractional_part, int fract_len) {
   } while (fract_len);
   return written;
 }
+long double bankers_rounding(long double num) {
+  double d = fmod(num, 1);
+  double m = fmod(num, 2);
+  double res = roundl(num);
+  if (d == 0.5) {
+    if (m > 1)
+      res = ceil(num);
+    else
+      res = floor(num);
+  }
+  return res;
+}
+int f_full_convert(char *str, flags_t flags, long double num) {
+  long double integer_part =
+      flags.precision == 0 ? bankers_rounding(num) : floorl(num);
+  long double fractional_part = num - integer_part;
+  int int_len = fint_part_len(integer_part);
+  int fract_len = flags.precision == -1 ? 6 : flags.precision;
+  int len = int_len + fract_len;
+  int written = 0;
+  if (flags.zero_padding)
+    written += pad(&(str[written]), flags.width - len, flags.zero_padding);
+  written += fint_part_convert(&(str[written]), integer_part, int_len);
+
+  if (fract_len != 0 || flags.alt) {
+    str[written] = '.';
+    ++written;
+  }
+  if (fract_len != 0)
+    written += fract_partconvert(&(str[written]), fractional_part, fract_len);
+  return written;
+}
 int convert_f(char *str, flags_t flags, va_list *args) {
   long double num;
   if (flags.size == 2)
@@ -251,38 +314,12 @@ int convert_f(char *str, flags_t flags, va_list *args) {
   else
     num = va_arg(*args, double);
 
-  int written = 0;
-  if (signbit(num)) {
-    str[written] = '-';
-    ++written;
-    num *= -1;
-  } else if (flags.show_plus && !isnan(num)) {
-    str[written] = '+';
-    ++written;
-  } else if (flags.plus_space && !isnan(num)) {
-    str[written] = ' ';
-    ++written;
-  }
+  int written = fsign_convert(str, flags, num);
+  num = fabsl(num);
 
   int is_nan_inf = fnan_inf_convert(&(str[written]), flags, num);
   written += is_nan_inf;
-  if (is_nan_inf == 0) {
-    long double integer_part = flags.precision == 0 ? roundl(num) : floorl(num);
-    long double fractional_part = num - integer_part;
-    int int_len = fint_part_len(integer_part);
-    int fract_len = flags.precision == -1 ? 6 : flags.precision;
-    int len = int_len + fract_len;
-    if (flags.zero_padding)
-      written += pad(&(str[written]), flags.width - len, flags.zero_padding);
-    written += fint_part_convert(&(str[written]), integer_part, int_len);
-
-    if (fract_len != 0 || flags.alt) {
-      str[written] = '.';
-      ++written;
-    }
-    if (fract_len != 0)
-      written += fract_partconvert(&(str[written]), fractional_part, fract_len);
-  }
+  if (is_nan_inf == 0) written += f_full_convert(&(str[written]), flags, num);
   return written;
 }
 int convert_s(char *str, flags_t flags, va_list *args) {
@@ -391,7 +428,50 @@ int convert_o(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
-int convert_e(char *str, flags_t flags, va_list *args) { return 0; }
+int convert_e(char *str, flags_t flags, va_list *args) {
+  long double num;
+  if (flags.size == 2)
+    num = va_arg(*args, long double);
+  else
+    num = va_arg(*args, double);
+
+  int written = fsign_convert(str, flags, num);
+  num = fabsl(num);
+
+  int is_nan_inf = fnan_inf_convert(&(str[written]), flags, num);
+  written += is_nan_inf;
+  if (is_nan_inf == 0) {
+    int exp = 0;
+    long double mantissa = num;
+
+    if (mantissa != 0) {
+      if (mantissa >= 10)
+        for (exp = 0; mantissa >= 10; ++exp) mantissa /= 10;
+      else
+        for (exp = 0; mantissa < 1; --exp) mantissa *= 10;
+    }
+    written += f_full_convert(&(str[written]), flags, mantissa);
+
+    str[written] = flags.caps ? 'E' : 'e';
+    ++written;
+    str[written] = exp < 0 ? '-' : '+';
+    ++written;
+    exp = abs(exp);
+
+    int e_len;
+    long tmp = exp;
+    for (e_len = 0; tmp; ++e_len) tmp /= 10;
+    e_len = (2 > e_len ? 2 : e_len);
+
+    int start = written;
+    do {
+      str[start + --e_len] = '0' + exp % 10;
+      ++written;
+      exp /= 10;
+    } while (e_len);
+  }
+  return written;
+}
 int convert_g(char *str, flags_t flags, va_list *args) { return 0; }
 
 int perform_conversion(char *str, char specifier, flags_t flags,
@@ -435,6 +515,7 @@ int parse_specifier(char *str, int written, const char **format,
     ++f;
     if (*f == '-') {
       f = parse_format_num(++f, NULL, args);
+      flags.precision = 0;
     } else {
       f = parse_format_num(f, &(flags.precision), args);
       if (flags.precision == -1) flags.precision = 0;
