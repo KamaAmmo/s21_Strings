@@ -2,28 +2,28 @@
 
 START_TEST(test_strncat_1) {
   char example1[256] = "sdf FFF UWEuw 0";
-  char example2[256] = "";
-  ck_assert_uint_eq(
-      (unsigned long)strncat(example1, example2, s21_strlen(example1)),
-      (unsigned long)s21_strncat(example1, example2, s21_strlen(example1)));
+  char example2[256] = "sdf FFF UWEuw 0";
+  char example3[256] = "";
+  ck_assert_str_eq(strncat(example1, example3, s21_strlen(example1)),
+                   s21_strncat(example2, example3, s21_strlen(example2)));
 }
 END_TEST
 
 START_TEST(test_strncat_2) {
   char example1[256] = "\n\t";
-  char example2[256] = "\0";
-  ck_assert_uint_eq(
-      (unsigned long)strncat(example1, example2, s21_strlen(example1)),
-      (unsigned long)s21_strncat(example1, example2, s21_strlen(example1)));
+  char example2[256] = "\n\t";
+  char example3[256] = "\0";
+  ck_assert_str_eq(strncat(example1, example3, s21_strlen(example1)),
+                   s21_strncat(example2, example3, s21_strlen(example2)));
 }
 END_TEST
 
 START_TEST(test_strncat_3) {
   char example1[256] = "/0";
-  char example2[256] = "\0";
-  ck_assert_uint_eq(
-      (unsigned long)strncat(example1, example2, s21_strlen(example1)),
-      (unsigned long)s21_strncat(example1, example2, s21_strlen(example1)));
+  char example2[256] = "/0";
+  char example3[256] = "\0";
+  ck_assert_str_eq(strncat(example1, example3, s21_strlen(example1)),
+                   s21_strncat(example2, example3, s21_strlen(example2)));
 }
 END_TEST
 

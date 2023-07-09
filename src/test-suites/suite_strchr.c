@@ -3,7 +3,7 @@
 START_TEST(test_strchr_1) {
   char example1[256] = "sdf FFF UWEuw 0";
   int c = '0';
-  ck_assert_str_eq(strchr(example1, c), s21_strchr(example1, c));
+  ck_assert_ptr_eq(strchr(example1, c), s21_strchr(example1, c));
 }
 END_TEST
 
@@ -11,7 +11,7 @@ START_TEST(test_strchr_2)  // !!!!!!!!!!!!!!!!!!!!!
 {
   char example1[256] = "JJ sv'av w \0 ds s";
   int c = '\0';
-  ck_assert_str_eq(strchr(example1, c), s21_strchr(example1, c));
+  ck_assert_ptr_eq(strchr(example1, c), s21_strchr(example1, c));
 }
 END_TEST
 

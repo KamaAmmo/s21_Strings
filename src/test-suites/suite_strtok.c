@@ -2,22 +2,25 @@
 
 START_TEST(test_strtok_1) {
   char example1[256] = "/////ddd///dfg/";
+  char example2[256] = "/////ddd///dfg/";
   char delim[256] = "/";
-  ck_assert_str_eq(strtok(example1, delim), s21_strtok(example1, delim));
+  ck_assert_str_eq(strtok(example1, delim), s21_strtok(example2, delim));
 }
 END_TEST
 
 START_TEST(test_strtok_2) {
   char example1[256] = "\n\t";
+  char example2[256] = "\n\t";
   char delim[256] = "n";
-  ck_assert_str_eq(strtok(example1, delim), s21_strtok(example1, delim));
+  ck_assert_str_eq(strtok(example1, delim), s21_strtok(example2, delim));
 }
 END_TEST
 
 START_TEST(test_strtok_3) {
   char example1[256] = "/0";
+  char example2[256] = "/0";
   char delim[256] = "";
-  ck_assert_str_eq(strtok(example1, delim), s21_strtok(example1, delim));
+  ck_assert_str_eq(strtok(example1, delim), s21_strtok(example2, delim));
 }
 END_TEST
 

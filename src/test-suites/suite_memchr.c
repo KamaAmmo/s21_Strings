@@ -4,8 +4,7 @@ START_TEST(test_memchr_1) {
   char example1[256] = "/////ddd///dfg/";
   int c = 'g';
   size_t n = 19;
-  ck_assert_uint_eq((unsigned long)memchr(example1, c, n),
-                    (unsigned long)s21_memchr(example1, c, n));
+  ck_assert_ptr_eq(memchr(example1, c, n), s21_memchr(example1, c, n));
 }
 END_TEST
 
@@ -13,8 +12,7 @@ START_TEST(test_memchr_2) {
   char example1[256] = "/////ddd///dfg/";
   int c = 'g';
   size_t n = 0;
-  ck_assert_uint_eq((unsigned long)memchr(example1, c, n),
-                    (unsigned long)s21_memchr(example1, c, n));
+  ck_assert_ptr_eq(memchr(example1, c, n), s21_memchr(example1, c, n));
 }
 END_TEST
 
@@ -22,8 +20,7 @@ START_TEST(test_memchr_3) {
   char example1[256] = "sssddvs\0twgfwg";
   int c = 'g';
   size_t n = 16;
-  ck_assert_uint_eq((unsigned long)memchr(example1, c, n),
-                    (unsigned long)s21_memchr(example1, c, n));
+  ck_assert_ptr_eq(memchr(example1, c, n), s21_memchr(example1, c, n));
 }
 END_TEST
 
@@ -31,8 +28,7 @@ START_TEST(test_memchr_4) {
   char example1[256] = "sssddvs\0twgfwg";
   int c = '\0';
   size_t n = 16;
-  ck_assert_uint_eq((unsigned long)memchr(example1, c, n),
-                    (unsigned long)s21_memchr(example1, c, n));
+  ck_assert_ptr_eq(memchr(example1, c, n), s21_memchr(example1, c, n));
 }
 END_TEST
 
