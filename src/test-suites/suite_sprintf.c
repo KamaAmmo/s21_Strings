@@ -61,16 +61,16 @@ const wchar_t *wstr_v[WSTR_M] = {L"Привет, мир!", L"Ⲯ⧃①♑ⶍ≃�
 
 #define UINT_N 8
 #define UINT_M 8
-const char *uint_f[INT_N] = {"[%d]",  "[%5d]",  "[%-5d]", "[%+d]",
-                             "[% d]", "[%+ d]", "[%+5d]", "[% 5d]"};
+const char *uint_f[INT_N] = {"[%u]",  "[%5u]",  "[%-5u]", "[%+u]",
+                             "[% u]", "[%+ u]", "[%+5u]", "[% 5u]"};
 const unsigned int uint_v[INT_M] = {0,     5,          -5,  100000,
                                     12116, UINT32_MAX, 256, 8};
 
-#define HEX_N 18
+#define HEX_N 19
 const char *hex_f[HEX_N] = {"[%x]",   "[%5x]",  "[%-5x]", "[%+x]",  "[% x]",
-                            "[%+ x]", "[%+5x]", "[% 5x]", "[%.0x]", "[%X]",
-                            "[%5X]",  "[%-5X]", "[%+X]",  "[% X]",  "[%+ X]",
-                            "[%+5X]", "[% 5X]", "[%.0X]"};
+                            "[%+ x]", "[%+5x]", "[% 5x]", "[%.0x]", "%#x",
+                            "[%X]",   "[%5X]",  "[%-5X]", "[%+X]",  "[% X]",
+                            "[%+ X]", "[%+5X]", "[% 5X]", "[%.0X]", "%#X"};
 // reuses uint_v
 
 #define OCT_N 11
@@ -163,8 +163,9 @@ START_TEST(wstr_t) {
 START_TEST(uint_t) {
   char str[100];
   char str_s21[100];
-  int r_val = sprintf(str, uint_f[_i / UINT_M], int_v[_i % UINT_M]);
-  int r_val_s21 = s21_sprintf(str_s21, uint_f[_i / UINT_M], int_v[_i % UINT_M]);
+  int r_val = sprintf(str, uint_f[_i / UINT_M], uint_v[_i % UINT_M]);
+  int r_val_s21 =
+      s21_sprintf(str_s21, uint_f[_i / UINT_M], uint_v[_i % UINT_M]);
   ck_assert_str_eq(str, str_s21);
   ck_assert_int_eq(r_val, r_val_s21);
 }

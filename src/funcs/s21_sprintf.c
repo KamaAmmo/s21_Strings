@@ -151,23 +151,6 @@ int convert_c(char *str, flags_t flags, va_list *args) {
   }
   return written;
 }
-int int_convert(char *str, flags_t flags, long num) {
-  int len, written = 0;
-  long tmp = num;
-  for (len = 0; tmp; ++len) tmp /= 10;
-  len = (flags.precision > len ? flags.precision : len);
-  if (flags.zero_padding)
-    written +=
-        pad(&(str[written]), flags.width - len - written, flags.zero_padding);
-
-  int start = written;
-  do {
-    str[start + --len] = '0' + num % 10;
-    ++written;
-    num /= 10;
-  } while (len);
-  return written;
-}
 int convert_d(char *str, flags_t flags, va_list *args) {
   long num;
   if (flags.size == 2)
