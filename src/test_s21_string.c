@@ -3198,7 +3198,6 @@ START_TEST(sscanf_spec_c_10) {
   char format[] = "%1c";
   char str[] = "ACFZJAAgergzdrgr";
   char c1 = 'x', c2;
-  printf("!%p", &c1);
   int16_t res1 = s21_sscanf(str, format, &c1);
   int16_t res2 = sscanf(str, format, &c2);
   ck_assert_int_eq(res1, res2);
