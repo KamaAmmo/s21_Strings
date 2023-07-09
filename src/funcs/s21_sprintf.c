@@ -1,3 +1,4 @@
+#include <locale.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -313,7 +314,8 @@ int f_num_convert(char *str, flags_t flags, long double num, bool rm_trail) {
   written += fint_part_convert(&(str[written]), integer_part, int_len);
 
   if (dot) {
-    str[written] = '.';
+    struct lconv *lc = localeconv();
+    str[written] = *(lc->decimal_point);
     ++written;
   }
   if (fract_len != 0)
