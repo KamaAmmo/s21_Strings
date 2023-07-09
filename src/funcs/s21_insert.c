@@ -1,7 +1,7 @@
 #include "../s21_string.h"
 
 void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
-  char *tmp = s21_NULL;
+  char *tmp = S21_NULL;
   size_t len2 = s21_strlen(src);
   size_t len1 = s21_strlen(str);
   if (src && str && (start_index <= len2)) {

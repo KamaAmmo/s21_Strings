@@ -3,10 +3,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "../s21_string.h"
 
-#define s21_size_t unsigned long long
-#define s21_NULL 0
 #define F_LEFT 1
 #define F_SIGN 2
 #define F_SPACE 4
@@ -14,8 +13,8 @@
 #define F_NULL 16
 #define F_DOUBLE 1
 #define F_LONG_DOUBLE 2
-#define F_Float 1024            
-#define F_SHORT_SHORT_INT 2048  
+#define F_Float 1024
+#define F_SHORT_SHORT_INT 2048
 #define F_SHORT_INT 4
 #define F_INT 8
 #define F_LONG_INT 16
@@ -34,9 +33,8 @@ typedef struct t_S21SscanfArgs {
   int count_fill_sym;
 } S21SscanfArgs;
 
-
 // char *s21_strpbrk(const char *str1, const char *str2) {  // Денис
-//   char *result = s21_NULL;
+//   char *result = S21_NULL;
 //   const char *temp_str1 = str1;
 //   const char *temp_str2 = str2;
 //   int find_flag = 0;
@@ -130,10 +128,10 @@ int is_separator(const char *s) {
 }
 
 S21SscanfArgs *ParseArgScanf(const char **p_format) {
-  S21SscanfArgs *result = s21_NULL;
+  S21SscanfArgs *result = S21_NULL;
   char *ident = s21_strpbrk(*p_format, "cdieEfgGosuxXpn");
   int err = 0;
-  if (ident != s21_NULL) {
+  if (ident != S21_NULL) {
     result = (S21SscanfArgs *)malloc(sizeof(S21SscanfArgs));
     if (**p_format == '*') {
       result->not_fill = 1;
@@ -154,7 +152,7 @@ S21SscanfArgs *ParseArgScanf(const char **p_format) {
   }
   if (err) {
     free(result);
-    result = s21_NULL;
+    result = S21_NULL;
   }
   return result;
 }
@@ -222,7 +220,7 @@ void FillIntVal(S21SscanfArgs *elems, va_list *args, long long val) {
   }
 }
 
-int FillNScanf(S21SscanfArgs *elems, va_list *args) {  //заполнить n
+int FillNScanf(S21SscanfArgs *elems, va_list *args) {  // заполнить n
   int err = 0;
   FillIntVal(elems, args, elems->count_fill_sym);
   elems->not_fill = 1;
@@ -254,8 +252,7 @@ long double ParseMantis(const char **p_str, S21SscanfArgs *elems) {
 void ParseEeGg(const char **p_str, int *plus, long double *degree,
                S21SscanfArgs *elems) {
   const char *temp_p_str = *p_str;
-  if ((**p_str == 'e' || **p_str == 'E') &&
-      elems->width != 0) {  
+  if ((**p_str == 'e' || **p_str == 'E') && elems->width != 0) {
     ++(*p_str);
     --elems->width;
     if (**p_str == '+' && elems->width != 0) {
@@ -340,7 +337,7 @@ int FillDouble(S21SscanfArgs *elems, va_list *args, const char **p_str) {
   long double val = 0;
   if (elems->width != 0 && elems->width != 1 && elems->width != 2 &&
       IsNan(p_str)) {
-    val = sign_plus ? -NAN : -NAN;  
+    val = sign_plus ? -NAN : -NAN;
     if (!elems->not_fill && !err) FillDoubleVal(elems, args, val);
   } else if (elems->width != 0 && elems->width != 1 && elems->width != 2 &&
              IsInf(p_str)) {
@@ -358,9 +355,8 @@ int FillDouble(S21SscanfArgs *elems, va_list *args, const char **p_str) {
     }
     val *= sign_plus ? 1. : -1.;
     ParseEeGg(p_str, &sign_plus, &degree, elems);
-    for (int i = 0; i < degree; ++i)
-      val *= sign_plus == 1 ? 10. : 0.1;   
-                                          
+    for (int i = 0; i < degree; ++i) val *= sign_plus == 1 ? 10. : 0.1;
+
     if (!elems->not_fill) FillDoubleVal(elems, args, val);
   } else {
     *p_str = temp_p_str;
@@ -436,8 +432,7 @@ unsigned long long ParseOct(const char **p_str, S21SscanfArgs *elems,
       --elems->width;
     }
   return result;
-                            }
-  
+}
 
 void SkipHexPrefix(const char **p_str, S21SscanfArgs *elems) {
   if (**p_str != '\0' && **p_str == '0' && elems->width != 0) {
@@ -699,14 +694,14 @@ int FillValue(S21SscanfArgs *elems, va_list *args, const char **p_str) {
 }
 
 int Scan_Value(const char *str, const char **p_str, const char **p_format,
-            va_list *args, int *fill_count) {
+               va_list *args, int *fill_count) {
   int err = 0;
   S21SscanfArgs *elems = ParseArgScanf(p_format);
-  if (elems != s21_NULL) {
+  if (elems != S21_NULL) {
     if (**p_str == '\0' && elems->format != 'n' && elems->format != 's') {
       err = -1;
     } else {
-      elems->count_fill_sym = labs(*p_str - str);  
+      elems->count_fill_sym = labs(*p_str - str);
       err = FillValue(elems, args, p_str);
       if (err) {
         free(elems);
@@ -752,4 +747,3 @@ int s21_sscanf(const char *str, const char *format, ...) {
   va_end(args);
   return err == -1 ? err : fill_count;
 }
-

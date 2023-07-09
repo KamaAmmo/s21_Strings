@@ -1,7 +1,7 @@
 #include "../s21_string.h"
 
-char *s21_strpbrk(const char *str1, const char *str2) {  
-  char *result = s21_NULL;
+char *s21_strpbrk(const char *str1, const char *str2) {
+  char *result = S21_NULL;
   const char *temp_str1 = str1;
   const char *temp_str2 = str2;
   int find_flag = 0;

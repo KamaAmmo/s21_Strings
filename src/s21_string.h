@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define s21_NULL ((void *)0)
+#define S21_NULL ((void *)0)
 typedef unsigned long s21_size_t;
 
 void *s21_memchr(const void *str, int c, s21_size_t n);

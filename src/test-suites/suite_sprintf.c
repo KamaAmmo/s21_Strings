@@ -57,7 +57,8 @@ const char *str_v[STR_M] = {"Hello, World!", "line1\nline2\nline3", "hmm\0huh?",
 #define WSTR_M 5
 const char *wstr_f[WSTR_N] = {"[%s]", "[%20s]", "[%-20s]", "[%20.5s]", "%.2s"};
 const wchar_t *wstr_v[WSTR_M] = {L"Привет, мир!", L"Ⲯ⧃①♑ⶍ≃⃗⏁‡♃⛕⼾⾨Ⲥ∆┤⭘⢸⚓⠊",
-                                 L"ⷆⳕ⪡⹛◑\0♳❇⚜", L"⿁⎛⺘♈⌹ℛ⦚", L"sfaf⭓⫚⾟⤓⨄⧛⬵"};
+                                 L"ⷆⳕ⪡⹛◑\0♳❇⚜", L"⿁⎛⺘♈⌹ℛ⦚",
+                                 L"sfaf⭓⫚⾟⤓⨄⧛⬵"};
 
 #define UINT_N 8
 #define UINT_M 8
