@@ -113,7 +113,9 @@ int convert_ws(char *str, flags_t flags, wchar_t *ws) {
   mbstate_t state;
   s21_memset(&state, 0, sizeof state);
 
-  char *arg = malloc(MB_CUR_MAX * in_sz * sizeof(char));
+  s21_size_t max_l = MB_CUR_MAX * in_sz;
+  char *arg = malloc(max_l * sizeof(char));
+  s21_memset(arg, '\0', max_l);
   char *p = arg;
   for (s21_size_t n = 0; n < in_sz; ++n) {
     int rc = wcrtomb(p, ws[n], &state);
@@ -541,11 +543,15 @@ int perform_conversion(char *str, char specifier, flags_t flags,
   converters['e' - 'a'] = convert_e;
   converters['g' - 'a'] = convert_g;
 
-  if (isupper(specifier)) flags.caps = true;
+  if (specifier >= 'A' && specifier <= 'Z') {
+    specifier += 'a' - 'A';
+    flags.caps = true;
+  }
 
   int written = 0;
-  if (converters[tolower(specifier) - 'a'] != NULL) {
-    written = converters[tolower(specifier) - 'a'](str, flags, args);
+  if (specifier >= 'a' && specifier <= 'z' &&
+      converters[specifier - 'a'] != NULL) {
+    written = converters[specifier - 'a'](str, flags, args);
   } else if (specifier == '%') {
     str[written] = specifier;
     ++written;
@@ -554,9 +560,11 @@ int perform_conversion(char *str, char specifier, flags_t flags,
 }
 
 bool is_zero_padding_applicable(flags_t flags, char specifier) {
+  char floats[7] = "feEgGc";
+  char ints[6] = "duxXo";
   return flags.zero_padding && !flags.left_just &&
-         ((s21_strchr("feEgGc", specifier) != NULL) ||
-          ((s21_strchr("duxXo", specifier) != NULL) && flags.precision < 0));
+         ((s21_strchr(floats, specifier) != NULL) ||
+          ((s21_strchr(ints, specifier) != NULL) && flags.precision < 0));
 }
 
 int parse_specifier(char *str, int written, const char **format,

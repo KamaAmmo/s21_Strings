@@ -1,10 +1,14 @@
+#include <stdlib.h>
+
 #include "../s21_string_tests.h"
 
 START_TEST(test_insert_1) {
   char example1[16] = "//ddd///";
   char delim[4] = "123";
   size_t n = 2;
-  ck_assert_str_eq(s21_insert(example1, delim, n), "//123ddd///");
+  char *test = s21_insert(example1, delim, n);
+  ck_assert_str_eq(test, "//123ddd///");
+  free(test);
 }
 END_TEST
 
@@ -12,7 +16,9 @@ START_TEST(test_insert_2) {
   char example1[16] = "ahg";
   char delim[16] = "vvvvv";
   size_t n = 1;
-  ck_assert_str_eq(s21_insert(example1, delim, n), "avvvvvhg");
+  char *test = s21_insert(example1, delim, n);
+  ck_assert_str_eq(test, "avvvvvhg");
+  free(test);
 }
 END_TEST
 
