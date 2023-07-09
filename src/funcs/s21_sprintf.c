@@ -541,11 +541,15 @@ int perform_conversion(char *str, char specifier, flags_t flags,
   converters['e' - 'a'] = convert_e;
   converters['g' - 'a'] = convert_g;
 
-  if (isupper(specifier)) flags.caps = true;
+  if (specifier >= 'A' && specifier <= 'Z') {
+    specifier += 'a' - 'A';
+    flags.caps = true;
+  }
 
   int written = 0;
-  if (converters[tolower(specifier) - 'a'] != NULL) {
-    written = converters[tolower(specifier) - 'a'](str, flags, args);
+  if (specifier >= 'a' && specifier <= 'z' &&
+      converters[specifier - 'a'] != NULL) {
+    written = converters[specifier - 'a'](str, flags, args);
   } else if (specifier == '%') {
     str[written] = specifier;
     ++written;
@@ -554,9 +558,11 @@ int perform_conversion(char *str, char specifier, flags_t flags,
 }
 
 bool is_zero_padding_applicable(flags_t flags, char specifier) {
+  char floats[7] = "feEgGc";
+  char ints[6] = "duxXo";
   return flags.zero_padding && !flags.left_just &&
-         ((s21_strchr("feEgGc", specifier) != NULL) ||
-          ((s21_strchr("duxXo", specifier) != NULL) && flags.precision < 0));
+         ((s21_strchr(floats, specifier) != NULL) ||
+          ((s21_strchr(ints, specifier) != NULL) && flags.precision < 0));
 }
 
 int parse_specifier(char *str, int written, const char **format,
