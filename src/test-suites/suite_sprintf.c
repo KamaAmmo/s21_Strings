@@ -244,7 +244,7 @@ Suite *suite_sprintf() {
   Suite *s = suite_create("s21_sprintf");
 
   TCase *tc_one_arg = tcase_create("OneArg");
-  /*tcase_add_loop_test(tc_one_arg, const_str_t, 0, CSTR_N);
+  tcase_add_loop_test(tc_one_arg, const_str_t, 0, CSTR_N);
   tcase_add_loop_test(tc_one_arg, char_t, 0, CHAR_N * CHAR_M);
   tcase_add_loop_test(tc_one_arg, wchar_test, 0, WCHAR_N * WCHAR_M);
   tcase_add_loop_test(tc_one_arg, int_t, 0, INT_N * INT_M);
@@ -259,8 +259,8 @@ Suite *suite_sprintf() {
   suite_add_tcase(s, tc_one_arg);
 
   TCase *tc_multi_arg = tcase_create("MultiArg");
-  // tcase_add_test(tc_multi_arg, star_t);
-  // tcase_add_test(tc_multi_arg, combo_t);
+  tcase_add_test(tc_multi_arg, star_t);
+  tcase_add_test(tc_multi_arg, combo_t);
   suite_add_tcase(s, tc_multi_arg);
 
   TCase *tc_crash_test = tcase_create("CrashTests");

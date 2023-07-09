@@ -1,7 +1,6 @@
 #include <math.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -113,7 +112,7 @@ const char *parse_size(const char *format, flags_t *flags) {
 int convert_ws(char *str, flags_t flags, wchar_t *ws) {
   size_t in_sz = wcslen(ws);
   mbstate_t state;
-  memset(&state, 0, sizeof state);
+  s21_memset(&state, 0, sizeof state);
 
   char *arg = malloc(MB_CUR_MAX * in_sz * sizeof(char));
   char *p = arg;
@@ -123,10 +122,10 @@ int convert_ws(char *str, flags_t flags, wchar_t *ws) {
     p += rc;
   }
 
-  int len = flags.precision < 0 || flags.precision > strlen(arg)
-                ? strlen(arg)
+  int len = flags.precision < 0 || flags.precision > s21_strlen(arg)
+                ? s21_strlen(arg)
                 : flags.precision;
-  memcpy(str, arg, len);
+  s21_memcpy(str, arg, len);
   free(arg);
   return len;
 }
@@ -238,16 +237,16 @@ int fnan_inf_convert(char *str, flags_t flags, long double num) {
   int written = 0;
   if (fabsl(num) == INFINITY) {
     if (flags.caps)
-      strcpy(&(str[written]), "INF");
+      s21_strncpy(&(str[written]), "INF", 3);
     else
-      strcpy(&(str[written]), "inf");
+      s21_strncpy(&(str[written]), "inf", 3);
     flags.zero_padding = false;
     written += 3;
   } else if (isnan(num)) {
     if (flags.caps)
-      strcpy(&(str[written]), "NAN");
+      s21_strncpy(&(str[written]), "NAN", 3);
     else
-      strcpy(&(str[written]), "nan");
+      s21_strncpy(&(str[written]), "nan", 3);
     flags.zero_padding = false;
     written += 3;
   }
@@ -342,10 +341,10 @@ int convert_s(char *str, flags_t flags, va_list *args) {
   int written = 0;
   if (flags.size != 2) {
     char *arg = va_arg(*args, char *);
-    int len = flags.precision < 0 || flags.precision > strlen(arg)
-                  ? strlen(arg)
+    int len = flags.precision < 0 || flags.precision > s21_strlen(arg)
+                  ? s21_strlen(arg)
                   : flags.precision;
-    memcpy(str, arg, len);
+    s21_memcpy(str, arg, len);
     written += len;
   } else {
     wchar_t *warg = va_arg(*args, wchar_t *);
@@ -558,8 +557,8 @@ int perform_conversion(char *str, char specifier, flags_t flags,
 
 bool is_zero_padding_applicable(flags_t flags, char specifier) {
   return flags.zero_padding && !flags.left_just &&
-         ((strchr("feEgGc", specifier) != NULL) ||
-          ((strchr("duxXo", specifier) != NULL) && flags.precision < 0));
+         ((s21_strchr("feEgGc", specifier) != NULL) ||
+          ((s21_strchr("duxXo", specifier) != NULL) && flags.precision < 0));
 }
 
 int parse_specifier(char *str, int written, const char **format,
