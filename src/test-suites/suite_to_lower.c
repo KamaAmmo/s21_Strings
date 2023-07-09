@@ -21,7 +21,9 @@ END_TEST
 
 START_TEST(test_to_lower_3) {
   char example1[256] = "Ag1fF23r";
-  ck_assert_str_eq(s21_to_lower(example1), "ag1ff23r");
+  char *test = s21_to_lower(example1);
+  ck_assert_str_eq(test, "ag1ff23r");
+  free(test);
 }
 END_TEST
 

@@ -37,7 +37,7 @@ int main(void) {
 
 void run_suite(Suite *s) {
   SRunner *runner = srunner_create(s);
-  srunner_set_fork_status(runner, CK_FORK);
+  srunner_set_fork_status(runner, CK_NOFORK);
   srunner_run_all(runner, CK_NORMAL);
   srunner_free(runner);
 }
