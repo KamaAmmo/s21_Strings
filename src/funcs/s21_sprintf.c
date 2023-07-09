@@ -2,7 +2,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
 #include <wchar.h>
 
 #include "../s21_string.h"
