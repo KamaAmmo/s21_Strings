@@ -1,17 +1,15 @@
 #include "../s21_string.h"
 
 void *s21_to_upper(const char *str) {
-  char *tmp = s21_NULL;
+  char *tmp = NULL;
   if (str) {
-    s21_size_t len = s21_strlen(str);
+    size_t len = s21_strlen(str);
     tmp = malloc((len + 1) * sizeof(char));
     for (int i = 0; i < len; i++) {
-      if (str[i] >= 'a' && str[i] <= 'z')
-        tmp[i] = str[i] - ('a' - 'A');
-      else
-        tmp[i] = str[i];
+      if (str[i] >= 'a' && str[i] <= 'z') tmp[i] = str[i] - ('a' - 'A');
+      else { tmp[i] = str[i];}
     }
+    tmp[len] = '\0';
   }
-
   return (void *)tmp;
 }
