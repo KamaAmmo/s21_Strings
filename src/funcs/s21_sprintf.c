@@ -374,7 +374,7 @@ int convert_x(char *str, flags_t flags, va_list *args) {
   int written = 0, precision = flags.precision < 0 ? 1 : flags.precision;
   if (precision != 0 || num != 0) {
     int offset = flags.caps ? 'A' : 'a';
-    if (flags.alt) {
+    if (flags.alt && num != 0) {
       str[written++] = '0';
       str[written++] = flags.caps ? 'X' : 'x';
     }
