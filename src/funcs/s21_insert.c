@@ -16,6 +16,7 @@ void *s21_insert(const char *src, const char *str, s21_size_t start_index) {
       else
         tmp[i] = src[i - len1];
     }
+    tmp[len1 + len2] = '\0';
   }
   return tmp;
 }

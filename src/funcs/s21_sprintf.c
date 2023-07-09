@@ -113,7 +113,9 @@ int convert_ws(char *str, flags_t flags, wchar_t *ws) {
   mbstate_t state;
   s21_memset(&state, 0, sizeof state);
 
-  char *arg = malloc(MB_CUR_MAX * in_sz * sizeof(char));
+  s21_size_t max_l = MB_CUR_MAX * in_sz;
+  char *arg = malloc(max_l * sizeof(char));
+  s21_memset(arg, '\0', max_l);
   char *p = arg;
   for (s21_size_t n = 0; n < in_sz; ++n) {
     int rc = wcrtomb(p, ws[n], &state);
