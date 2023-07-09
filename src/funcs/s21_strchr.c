@@ -7,5 +7,6 @@ char *s21_strchr(const char *str, int c) {
     if (*src == c) res = src;
     src++;
   }
+  if (*src == c) res = src;
   return res;
 }
