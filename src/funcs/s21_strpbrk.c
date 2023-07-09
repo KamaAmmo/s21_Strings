@@ -1,14 +1,24 @@
 #include "../s21_string.h"
 
-// находим первое вхождение любого символа из str2 в строке str1
-
-char *s21_strpbrk(const char *str1, const char *str2) {
-  char *search = NULL;
-  for (; *str1 != '\0'; ++str1) {
-    if (s21_strchr(str2, *str1)) {
-      search = (char *)str1;
+char *s21_strpbrk(const char *str1, const char *str2) {  
+  char *result = s21_NULL;
+  const char *temp_str1 = str1;
+  const char *temp_str2 = str2;
+  int find_flag = 0;
+  while (*temp_str1 != '\0') {
+    while (*temp_str2 != '\0') {
+      if (*temp_str2 == *temp_str1) {
+        result = (char *)temp_str1;
+        find_flag = 1;
+        break;
+      }
+      ++temp_str2;
+    }
+    if (find_flag) {
       break;
     }
+    temp_str2 = str2;
+    ++temp_str1;
   }
-  return search;
+  return result;
 }
