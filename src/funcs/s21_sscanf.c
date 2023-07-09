@@ -6,55 +6,22 @@
 
 #include "../s21_string.h"
 
-#define F_LEFT 1
-#define F_SIGN 2
-#define F_SPACE 4
-#define F_HESHTAG 8
-#define F_NULL 16
-#define F_DOUBLE 1
-#define F_LONG_DOUBLE 2
-#define F_Float 1024
-#define F_SHORT_SHORT_INT 2048
-#define F_SHORT_INT 4
-#define F_INT 8
-#define F_LONG_INT 16
-#define F_LONG_LONG_INT 32
-#define F_STR 64
-#define F_CHAR 128
-#define F_PTR 256
-#define F_N 512
-#define CHAR_PTR char *
 
-typedef struct t_S21SscanfArgs {
-  int not_fill;
-  int width;
-  int length;
-  char format;
-  int count_fill_sym;
-} S21SscanfArgs;
 
-// char *s21_strpbrk(const char *str1, const char *str2) {  // Денис
-//   char *result = S21_NULL;
-//   const char *temp_str1 = str1;
-//   const char *temp_str2 = str2;
-//   int find_flag = 0;
-//   while (*temp_str1 != '\0') {
-//     while (*temp_str2 != '\0') {
-//       if (*temp_str2 == *temp_str1) {
-//         result = (char *)temp_str1;
-//         find_flag = 1;
-//         break;
-//       }
-//       ++temp_str2;
-//     }
-//     if (find_flag) {
-//       break;
-//     }
-//     temp_str2 = str2;
-//     ++temp_str1;
-//   }
-//   return result;
-// }
+int isOverflowMult(long long val1, long long val2) {
+  long long result = val1 * val2;
+  return val1 == result / val2 ? 0 : 1;
+}
+
+int isOverflowSum(long long val1, long long val2) {
+  return (LLONG_MAX - val1 >= val2) ? 0 : 1;
+}
+
+int isOverflowSub(long long val1, long long val2) {
+  return (LLONG_MIN + val2 <= val1) ? 0 : 1;
+}
+
+
 int ParseNum(const char **p_format) {
   int result = 0;
   while (*(*p_format) >= '0' && *(*p_format) <= '9') {
@@ -174,6 +141,7 @@ int FillChar(S21SscanfArgs *elems, va_list *args, const char **p_str) {
   }
   return err;
 }
+
 
 int FillStr(S21SscanfArgs *elems, va_list *args, const char **p_str) {
   int err = 0;
@@ -363,19 +331,6 @@ int FillDouble(S21SscanfArgs *elems, va_list *args, const char **p_str) {
     err = **p_str == '\0' ? -1 : 1;
   }
   return err;
-}
-
-int isOverflowMult(long long val1, long long val2) {
-  long long result = val1 * val2;
-  return val1 == result / val2 ? 0 : 1;
-}
-
-int isOverflowSum(long long val1, long long val2) {
-  return (LLONG_MAX - val1 >= val2) ? 0 : 1;
-}
-
-int isOverflowSub(long long val1, long long val2) {
-  return (LLONG_MIN + val2 <= val1) ? 0 : 1;
 }
 
 unsigned long long GetUVal(S21SscanfArgs *elems, long long temp_res) {

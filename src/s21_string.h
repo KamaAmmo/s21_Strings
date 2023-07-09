@@ -3,6 +3,32 @@
 
 #define S21_NULL ((void *)0)
 typedef unsigned long s21_size_t;
+#define F_LEFT 1
+#define F_SIGN 2
+#define F_SPACE 4
+#define F_HESHTAG 8
+#define F_NULL 16
+#define F_DOUBLE 1
+#define F_LONG_DOUBLE 2
+#define F_Float 1024
+#define F_SHORT_SHORT_INT 2048
+#define F_SHORT_INT 4
+#define F_INT 8
+#define F_LONG_INT 16
+#define F_LONG_LONG_INT 32
+#define F_STR 64
+#define F_CHAR 128
+#define F_PTR 256
+#define F_N 512
+#define CHAR_PTR char *
+
+typedef struct t_S21SscanfArgs {
+  int not_fill;
+  int width;
+  int length;
+  char format;
+  int count_fill_sym;
+} S21SscanfArgs;
 
 void *s21_memchr(const void *str, int c, s21_size_t n);
 int s21_memcmp(const void *str1, const void *str2, s21_size_t n);
