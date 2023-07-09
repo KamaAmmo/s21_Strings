@@ -255,7 +255,7 @@ static const char *myerror[] = {
 #endif
 
 char *s21_strerror(int errnum) {
-  char *res = NULL;
+  char *res = S21_NULL;
   static char arr[128] = {'\0'};
   if (errnum <= MIN_ERRLIST || errnum >= MAX_ERRLIST) {
     s21_sprintf(arr, "Unknown error: %d", errnum);

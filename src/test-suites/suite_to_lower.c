@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "../s21_string_tests.h"
 
 START_TEST(test_to_lower_1) {

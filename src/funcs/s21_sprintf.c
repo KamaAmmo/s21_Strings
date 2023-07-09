@@ -110,20 +110,20 @@ const char *parse_size(const char *format, flags_t *flags) {
 }
 
 int convert_ws(char *str, flags_t flags, wchar_t *ws) {
-  size_t in_sz = wcslen(ws);
+  s21_size_t in_sz = wcslen(ws);
   mbstate_t state;
   s21_memset(&state, 0, sizeof state);
 
   char *arg = malloc(MB_CUR_MAX * in_sz * sizeof(char));
   char *p = arg;
-  for (size_t n = 0; n < in_sz; ++n) {
+  for (s21_size_t n = 0; n < in_sz; ++n) {
     int rc = wcrtomb(p, ws[n], &state);
     if (rc == -1) break;
     p += rc;
   }
 
-  int len = flags.precision < 0 || flags.precision > s21_strlen(arg)
-                ? s21_strlen(arg)
+  int len = flags.precision < 0 || flags.precision > (int)s21_strlen(arg)
+                ? (int)s21_strlen(arg)
                 : flags.precision;
   s21_memcpy(str, arg, len);
   free(arg);
@@ -270,7 +270,6 @@ int fint_part_convert(char *str, long double num, int len) {
   return written;
 }
 long long fract_part_int(long double fractional_part, int fract_len) {
-  long double tmp = fractional_part;
   long long fract_num = 0;
   for (int l = fract_len; l > 0; --l) {
     fractional_part *= 10;
@@ -341,8 +340,8 @@ int convert_s(char *str, flags_t flags, va_list *args) {
   int written = 0;
   if (flags.size != 2) {
     char *arg = va_arg(*args, char *);
-    int len = flags.precision < 0 || flags.precision > s21_strlen(arg)
-                  ? s21_strlen(arg)
+    int len = flags.precision < 0 || flags.precision > (int)s21_strlen(arg)
+                  ? (int)s21_strlen(arg)
                   : flags.precision;
     s21_memcpy(str, arg, len);
     written += len;
