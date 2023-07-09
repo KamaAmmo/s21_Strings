@@ -1,6 +1,6 @@
 #include "../s21_string.h"
 
-//находим первое вхождение любого символа из str2 в строке str1
+// находим первое вхождение любого символа из str2 в строке str1
 
 char *s21_strpbrk(const char *str1, const char *str2) {
   char *search = NULL;
