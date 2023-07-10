@@ -131,7 +131,6 @@ START_TEST(test_insert_10) {
 }
 END_TEST
 
-
 Suite *suite_insert() {
   Suite *s = suite_create("s21_insert");
 

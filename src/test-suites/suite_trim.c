@@ -2,9 +2,6 @@
 
 #include "../s21_string_tests.h"
 
-
-
-
 START_TEST(test_trim_1) {
   char s1[30] = "-?hello, world!";
   char s3[] = "!?-";
@@ -131,7 +128,6 @@ START_TEST(test_trim_13) {
   free(test);
 }
 END_TEST
-
 
 Suite *suite_trim() {
   Suite *s = suite_create("s21_trim");

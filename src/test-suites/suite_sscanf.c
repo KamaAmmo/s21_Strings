@@ -338,9 +338,9 @@ START_TEST(sscanf_spec_hi_4parametra) {
       "74523568412ffff 5845a 4745243affa 475fd77d75"};
   for (size_t i = 0; i < (sizeof(formats) / sizeof(*formats)); i++) {
     for (size_t j = 0; j < (sizeof(str) / sizeof(*str)); j++) {
-      unsigned short d1 = 0 , d2 = 0;
-      unsigned short q1 = 0, q2 = 0 ;
-      unsigned short z1 = 0, z2 = 0 ;
+      unsigned short d1 = 0, d2 = 0;
+      unsigned short q1 = 0, q2 = 0;
+      unsigned short z1 = 0, z2 = 0;
       unsigned short w1 = 0, w2 = 0;
 
       int16_t res1 = s21_sscanf(str[j], formats[i], &d1, &q1, &z1, &w1);
@@ -428,9 +428,9 @@ START_TEST(sscanf_spec_li_3parametra) {
                       "0x12 +0x1a -0x8f"};
   for (size_t i = 0; i < (sizeof(formats) / sizeof(*formats)); i++) {
     for (size_t j = 0; j < (sizeof(str) / sizeof(*str)); j++) {
-      unsigned long int d1 = 0, d2=0;
-      unsigned long int q1=0, q2=0;
-      unsigned long int z1=0, z2=0;
+      unsigned long int d1 = 0, d2 = 0;
+      unsigned long int q1 = 0, q2 = 0;
+      unsigned long int z1 = 0, z2 = 0;
 
       int16_t res1 = s21_sscanf(str[j], formats[i], &d1, &q1, &z1);
       int16_t res2 = sscanf(str[j], formats[i], &d2, &q2, &z2);
@@ -455,9 +455,9 @@ START_TEST(sscanf_spec_lli_3parametra) {
                       "0x12 +0x1a -0x8f"};
   for (size_t i = 0; i < (sizeof(formats) / sizeof(*formats)); i++) {
     for (size_t j = 0; j < (sizeof(str) / sizeof(*str)); j++) {
-      unsigned long long int d1=0, d2=0;
-      unsigned long long int q1=0, q2=0;
-      unsigned long long int z1=0, z2=0;
+      unsigned long long int d1 = 0, d2 = 0;
+      unsigned long long int q1 = 0, q2 = 0;
+      unsigned long long int z1 = 0, z2 = 0;
 
       int16_t res1 = s21_sscanf(str[j], formats[i], &d1, &q1, &z1);
       int16_t res2 = sscanf(str[j], formats[i], &d2, &q2, &z2);
