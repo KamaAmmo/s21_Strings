@@ -12,19 +12,19 @@ START_TEST(test_trim_1) {
 END_TEST
 
 START_TEST(test_trim_2) {
-  char example1[256] = "abcab//ddd///dfg//";
+  char example1[256] = "abcab//ddd///dfg//abccab";
   char delim[256] = "abc";
   char *test = s21_trim(example1, delim);
-  ck_assert_str_eq(test, "ab//ddd///dfg//");
+  ck_assert_str_eq(test, "//ddd///dfg//");
   free(test);
 }
 END_TEST
 
 START_TEST(test_trim_3) {
-  char example1[256] = "abcab//ddd";
+  char example1[256] = "ddddabcab//";
   char delim[256] = "ddddddd";
   char *test = s21_trim(example1, delim);
-  ck_assert_str_eq(test, "abcab//ddd");
+  ck_assert_str_eq(test, "abcab//");
   free(test);
 }
 END_TEST
