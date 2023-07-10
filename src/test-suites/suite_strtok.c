@@ -24,6 +24,14 @@ START_TEST(test_strtok_3) {
 }
 END_TEST
 
+START_TEST(test_strtok_4) {
+  char example1[256] = "";
+  char example2[256] = "";
+  char delim[256] = "";
+  ck_assert_ptr_eq(strtok(example1, delim), s21_strtok(example2, delim));
+}
+END_TEST
+
 Suite *suite_strtok() {
   Suite *s = suite_create("s21_strtok");
 
@@ -32,6 +40,7 @@ Suite *suite_strtok() {
   tcase_add_test(tc_core, test_strtok_1);
   tcase_add_test(tc_core, test_strtok_2);
   tcase_add_test(tc_core, test_strtok_3);
+  tcase_add_test(tc_core, test_strtok_4);
 
   suite_add_tcase(s, tc_core);
 
