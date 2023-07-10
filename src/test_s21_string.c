@@ -1139,7 +1139,6 @@ START_TEST(strtok_10) {
 }
 END_TEST
 
-
 START_TEST(strtok_12) {
   char s1[] = "1kcjscjosdicjk1iojdweoicjwio1weiojdiowejc1dwejoicjw1icdoi";
   char s2[] = "1kcjscjosdicjk1iojdweoicjwio1weiojdiowejc1dwejoicjw1icdoi";
@@ -1608,7 +1607,8 @@ END_TEST
 //   char str1[100];
 //   char str2[100];
 //   char *format =
-//       "%6.4c format_c %-6.4c format_c %4.10lc format_c %-4.10lc format_c %-0lc";
+//       "%6.4c format_c %-6.4c format_c %4.10lc format_c %-4.10lc format_c
+//       %-0lc";
 //   int a = 30;
 //   unsigned long int b = 30;
 //   unsigned long int c = 30;
@@ -1622,7 +1622,8 @@ END_TEST
 //   char str1[100];
 //   char str2[100];
 //   char *format =
-//       "%10c format_c %-6.4c format_c %10.10lc format_c %-4.10lc format_c %-0lc";
+//       "%10c format_c %-6.4c format_c %10.10lc format_c %-4.10lc format_c
+//       %-0lc";
 //   int a = 30;
 //   unsigned long int b = 30;
 //   unsigned long int c = 30;
@@ -1639,8 +1640,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "format d %d format d";
 //   int val = -54;
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -1774,9 +1775,9 @@ END_TEST
 // START_TEST(sprintf_1_g) {
 //   char str1[200];
 //   char str2[200];
-//   char *format = "%g format g %.g format g %3g format g %2.g format g %4.20g!";
-//   double num = 41.464;
-//   ck_assert_int_eq(sprintf(str1, format, num, num, num, num, num),
+//   char *format = "%g format g %.g format g %3g format g %2.g format g
+//   %4.20g!"; double num = 41.464; ck_assert_int_eq(sprintf(str1, format, num,
+//   num, num, num, num),
 //                    s21_sprintf(str2, format, num, num, num, num, num));
 //   ck_assert_pstr_eq(str1, str2);
 // }
@@ -1786,7 +1787,8 @@ END_TEST
 // //   char str1[200];
 // //   char str2[200];
 // //   char *format = "%g format g %.g format g %2g format g %2.g format g
-// //   %2.50g!"; double num = -1478.59595; ck_assert_int_eq(sprintf(str1, format,
+// //   %2.50g!"; double num = -1478.59595; ck_assert_int_eq(sprintf(str1,
+// format,
 // //   num, num, num, num, num),
 // //                    s21_sprintf(str2, format, num, num, num, num, num));
 // //   ck_assert_pstr_eq(str1, str2);
@@ -1820,9 +1822,9 @@ END_TEST
 // START_TEST(sprintf_5_g) {
 //   char str1[200];
 //   char str2[200];
-//   char *format = "%g format g %.g format g %4g format g %4.g format g %#5.10g!";
-//   double num = 2.48465684468;
-//   ck_assert_int_eq(sprintf(str1, format, num, num, num, num, num),
+//   char *format = "%g format g %.g format g %4g format g %4.g format g
+//   %#5.10g!"; double num = 2.48465684468; ck_assert_int_eq(sprintf(str1,
+//   format, num, num, num, num, num),
 //                    s21_sprintf(str2, format, num, num, num, num, num));
 //   ck_assert_pstr_eq(str1, str2);
 // }
@@ -1831,9 +1833,9 @@ END_TEST
 // START_TEST(sprintf_6_g) {
 //   char str1[200];
 //   char str2[200];
-//   char *format = "%g format g %.g format g %4g format g %4.g format g %#5.10g!";
-//   double num = -0.0000756589367;
-//   ck_assert_int_eq(sprintf(str1, format, num, num, num, num, num),
+//   char *format = "%g format g %.g format g %4g format g %4.g format g
+//   %#5.10g!"; double num = -0.0000756589367; ck_assert_int_eq(sprintf(str1,
+//   format, num, num, num, num, num),
 //                    s21_sprintf(str2, format, num, num, num, num, num));
 //   ck_assert_pstr_eq(str1, str2);
 // }
@@ -1842,9 +1844,9 @@ END_TEST
 // START_TEST(sprintf_7_g) {
 //   char str1[200];
 //   char str2[200];
-//   char *format = "%g format g %.g format g %4g format g %4.g format g %5.10g!";
-//   double num = 573429.56589367;
-//   ck_assert_int_eq(sprintf(str1, format, num, num, num, num, num),
+//   char *format = "%g format g %.g format g %4g format g %4.g format g
+//   %5.10g!"; double num = 573429.56589367; ck_assert_int_eq(sprintf(str1,
+//   format, num, num, num, num, num),
 //                    s21_sprintf(str2, format, num, num, num, num, num));
 //   ck_assert_pstr_eq(str1, str2);
 // }
@@ -1934,8 +1936,8 @@ END_TEST
 //   char str2[300];
 //   char *format = "format e: %0.0e!";
 //   double num = -79844848484848.;
-//   ck_assert_int_eq(sprintf(str1, format, num), s21_sprintf(str2, format, num));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, num), s21_sprintf(str2, format,
+//   num)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -2021,9 +2023,9 @@ END_TEST
 // START_TEST(sprintf_1_f) {
 //   char str1[200];
 //   char str2[200];
-//   char *format = "%f format f %.f format f %4f format f %4.f format f %5.10f!";
-//   double num = 8785.464651564541;
-//   ck_assert_int_eq(sprintf(str1, format, num, num, num, num, num),
+//   char *format = "%f format f %.f format f %4f format f %4.f format f
+//   %5.10f!"; double num = 8785.464651564541; ck_assert_int_eq(sprintf(str1,
+//   format, num, num, num, num, num),
 //                    s21_sprintf(str2, format, num, num, num, num, num));
 //   ck_assert_pstr_eq(str1, str2);
 // }
@@ -2032,9 +2034,9 @@ END_TEST
 // START_TEST(sprintf_2_f) {
 //   char str1[200];
 //   char str2[200];
-//   char *format = "%f format f %.f format f %3f format f %4.f format f %5.10f!";
-//   double num = -87.4668948948498;
-//   ck_assert_int_eq(sprintf(str1, format, num, num, num, num, num),
+//   char *format = "%f format f %.f format f %3f format f %4.f format f
+//   %5.10f!"; double num = -87.4668948948498; ck_assert_int_eq(sprintf(str1,
+//   format, num, num, num, num, num),
 //                    s21_sprintf(str2, format, num, num, num, num, num));
 //   ck_assert_pstr_eq(str1, str2);
 // }
@@ -2161,8 +2163,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "format x %x format x";
 //   int val = 0x54;
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -2297,8 +2299,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "format X %X format X";
 //   int val = 0X124;
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -2433,8 +2435,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "format i %d format i";
 //   int val = -1727722;
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -2584,8 +2586,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "format o %o format o";
 //   int val = 224;
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -2706,8 +2708,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "%%format per %o format per";
 //   int val = 452;
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -2743,8 +2745,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "format p %p format p";
 //   char *val = "25";
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -2865,8 +2867,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "format s %s format s";
 //   char *val = "ck_assert_pstr_eq(str1, str2);";
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 
@@ -2914,8 +2916,8 @@ END_TEST
 //   char str2[200];
 //   char *format = "%6.5s s %.23s  s %3.s s %.s";
 //   char *val =
-//       "After a few seconds, Turing came to a logical conclusion to entrust the "
-//       "job to you";
+//       "After a few seconds, Turing came to a logical conclusion to entrust
+//       the " "job to you";
 //   char *val2 = " logical conclusion to entrust the job to you";
 //   char *val3 = " the job to you";
 //   char *val4 = " good";
@@ -2950,8 +2952,8 @@ END_TEST
 //       "string.h";
 //   char *val2 = "i don't care anymore, really";
 //   char *val3 =
-//       "InIn this project you will develop your own implementatmplementation of "
-//       "the string.h";
+//       "InIn this project you will develop your own implementatmplementation
+//       of " "the string.h";
 //   char *val4 =
 //       "vIn this project you will develop your own implementation of the "
 //       "string.h";
@@ -2986,8 +2988,8 @@ END_TEST
 //   char str2[100] = "";
 //   char *format = "format u %u format u";
 //   unsigned int val = 012;
-//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format, val));
-//   ck_assert_pstr_eq(str1, str2);
+//   ck_assert_int_eq(sprintf(str1, format, val), s21_sprintf(str2, format,
+//   val)); ck_assert_pstr_eq(str1, str2);
 // }
 // END_TEST
 

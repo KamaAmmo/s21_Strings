@@ -6,8 +6,6 @@
 
 #include "../s21_string.h"
 
-
-
 int isOverflowMult(long long val1, long long val2) {
   long long result = val1 * val2;
   return val1 == result / val2 ? 0 : 1;
@@ -20,7 +18,6 @@ int isOverflowSum(long long val1, long long val2) {
 int isOverflowSub(long long val1, long long val2) {
   return (LLONG_MIN + val2 <= val1) ? 0 : 1;
 }
-
 
 int ParseNum(const char **p_format) {
   int result = 0;
@@ -141,7 +138,6 @@ int FillChar(S21SscanfArgs *elems, va_list *args, const char **p_str) {
   }
   return err;
 }
-
 
 int FillStr(S21SscanfArgs *elems, va_list *args, const char **p_str) {
   int err = 0;

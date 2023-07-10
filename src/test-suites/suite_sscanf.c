@@ -1,7 +1,5 @@
 #include "../s21_string_tests.h"
 
-
-
 START_TEST(sscanf_spec_c_2) {
   char format[] = "%c";
   char str[] = "\t\n\n  1 \n  \t";
@@ -1109,11 +1107,10 @@ START_TEST(sscanf_x_9) {
 }
 END_TEST
 
-
 Suite *suite_sscanf() {
   Suite *suite = suite_create("s21_sscanf");
 
-TCase *tc_sscanf_spec_c = tcase_create("sscanf_spec_c");
+  TCase *tc_sscanf_spec_c = tcase_create("sscanf_spec_c");
   tcase_add_test(tc_sscanf_spec_c, sscanf_spec_c_2);
   tcase_add_test(tc_sscanf_spec_c, sscanf_spec_c_4);
   tcase_add_test(tc_sscanf_spec_c, sscanf_spec_c_5);
@@ -1205,4 +1202,3 @@ TCase *tc_sscanf_spec_c = tcase_create("sscanf_spec_c");
   suite_add_tcase(suite, tc_sscanf_spec_x);
   return suite;
 }
-
