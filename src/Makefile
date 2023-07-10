@@ -7,10 +7,10 @@ TEST_SUITS := test-suites/suite_insert.o test-suites/suite_memchr.o test-suites/
 
 ifeq ($(shell uname), Linux)
 	OPEN := xdg-open
-	TEST_FLAGS += -lrt 
+	TEST_FLAGS += -lrt -lsubunit
 endif
 
-all: test
+all: gcov_report
 
 rebuild: clean all
 
