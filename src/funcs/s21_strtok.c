@@ -3,9 +3,9 @@
 char *s21_strtok(char *str, const char *delim) {
   static char *last;
   int ch;
-  if (str == 0) {
-    str = last;
-  }
+  // if (str == 0) {
+  //   str = last;
+  // } 
   do {
     if ((ch = *str++) == '\0') {
       return 0;
