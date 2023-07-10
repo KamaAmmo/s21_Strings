@@ -22,7 +22,7 @@ void check_begin_src(const char *src, const char *trim_chars, int *c) {
 
 void check_end_src(const char *src, const char *trim_chars, s21_size_t len1,
                    s21_size_t len2, int *c) {
-  for (s21_size_t t = len1 - 1; t >= 0; t--) {
+  for (s21_size_t t = len1 - 1; t != 0; t--) {
     if (char_in_trim(src[t], trim_chars, len2))
       *c += 1;
     else
