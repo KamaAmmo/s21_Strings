@@ -66,7 +66,7 @@ const char *uint_f[INT_N] = {"[%u]",  "[%5u]",  "[%-5u]", "[%+u]",
 const unsigned int uint_v[INT_M] = {0,     5,          -5,  100000,
                                     12116, UINT32_MAX, 256, 8};
 
-#define HEX_N 19
+#define HEX_N 20
 const char *hex_f[HEX_N] = {"[%x]",   "[%5x]",  "[%-5x]", "[%+x]",  "[% x]",
                             "[%+ x]", "[%+5x]", "[% 5x]", "[%.0x]", "%#x",
                             "[%X]",   "[%5X]",  "[%-5X]", "[%+X]",  "[% X]",

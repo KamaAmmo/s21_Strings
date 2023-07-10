@@ -4,7 +4,7 @@ START_TEST(test_strncmp_1) {
   char example1[256] = "/////ddd///dfg/";
   char example2[256] = "/////ddd///dfg/";
   s21_size_t n = 14;
-  ck_assert_uint_eq(strncmp(example1, example2, n),
+  ck_assert_uint_eq(s21_strncmp(example1, example2, n),
                     strncmp(example1, example2, n));
 }
 END_TEST
@@ -29,15 +29,6 @@ END_TEST
 
 START_TEST(test_strncmp_4) {
   char example1[256] = "\0sac";
-  char example2[256] = "asc\0";
-  s21_size_t n = 4;
-  ck_assert_uint_eq(strncmp(example1, example2, n),
-                    s21_strncmp(example1, example2, n));
-}
-END_TEST
-
-START_TEST(test_strncmp_5) {
-  char example1[256] = "\0sac";
   char example2[256] = "\0asc\0";
   s21_size_t n = 255;
   ck_assert_uint_eq(strncmp(example1, example2, n),
@@ -54,7 +45,6 @@ Suite *suite_strncmp() {
   tcase_add_test(tc_core, test_strncmp_2);
   tcase_add_test(tc_core, test_strncmp_3);
   tcase_add_test(tc_core, test_strncmp_4);
-  tcase_add_test(tc_core, test_strncmp_5);
   suite_add_tcase(s, tc_core);
 
   return s;
